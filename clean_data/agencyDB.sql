@@ -1,0 +1,19 @@
+CREATE TABLE IF NOT EXISTS "Agency" (
+	"agencyId" VARCHAR NOT NULL,
+	"agencyName" TEXT,
+	PRIMARY KEY("agencyId")
+);
+
+CREATE TABLE IF NOT EXISTS "Object" (
+	"agencyId" VARCHAR NOT NULL,
+	"id" VARCHAR NOT NULL,
+	"parentId" VARCHAR NOT NULL,
+	"name" TEXT NOT NULL,
+	"refUName" TEXT,
+	"refFullName" TEXT,
+	"Type" VARCHAR NOT NULL,
+	"Rank" VARCHAR NOT NULL,
+	PRIMARY KEY("id"),
+	FOREIGN KEY ("agencyId") REFERENCES "Agency"("agencyId")
+	ON UPDATE NO ACTION ON DELETE NO ACTION
+);

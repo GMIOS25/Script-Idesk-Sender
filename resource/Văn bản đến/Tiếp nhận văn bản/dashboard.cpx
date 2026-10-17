@@ -1,0 +1,17 @@
+{
+    "idk.edoc.receive": {
+        "processing": 272,
+        "direction": 6,
+        "noneRead": 174,
+        "noneBook": 208,
+        "receiveInDate": 270,
+        "lateInDate": 0,
+        "lated": 0,
+        "signed": 0,
+        "rejectedOrgSto": 0,
+        "reminded": 0,
+        "assigneeLated": 0,
+        "receiverOpinion": 0,
+        "unreadReceived": 0
+    }
+}

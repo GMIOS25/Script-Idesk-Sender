@@ -1,0 +1,209 @@
+<div id="process-list-widget" class="listWidget ui-resizable">
+    <div class="listToolbar">
+        <span id="process-list-btn-workflow" class="hide"></span>
+        <button class="btn btn-primary hide" id="process-list-btn-transfer" title="Chuyển xử lý" disabled="disabled" style="display: none !important;">
+            <i class="icon-share-alt"></i> Chuyển xử lý
+        </button>
+        <div class="btn-group" style="margin-left:0px;">
+            <button id="process-list-btn-action" type="button" class="btn btn-default dropdown-toggle hide" data-toggle="dropdown" disabled="disabled" style="display: none !important;">
+                <i class="icon-align-justify"></i> <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <!--<li class="divider"></li>-->
+                <li id="process-list-btn-to-know" class="hide" disabled="disabled" style="display: none !important;"><a href="javascript:;"><i class="icon-info-sign"></i> Để biết</a></li>
+                <li id="process-list-btn-ignore-review-lated" class="hide" disabled="disabled" style="display: none !important;"><a href="javascript:;" title="Không cần xem lại nữa"><i class="icon-minus-sign-alt"></i> Bỏ qua</a></li>
+                <li id="process-list-btn-complete" class="hide" disabled="disabled" style="display: none !important;"><a href="javascript:;"><i class="icon-ok"></i> Hoàn thành</a></li>
+                <li id="process-list-btn-complete-please" class="hide" disabled="disabled" style="display: none !important;"><a href="javascript:;"><i class="icon-ok"></i> Hoàn thành</a></li>
+                <li id="process-list-mark-read" class="hide" disabled="disabled" style="display: none !important;"><a href="javascript:;"><i class="icon-eye-open"></i> Đánh dấu là đã đọc</a></li>
+                <li id="process-list-mark-unread" class="hide" disabled="disabled" style="display: none !important;"><a href="javascript:;"><i class="icon-eye-close"></i> Đánh dấu là chưa đọc</a></li>
+                <li id="process-list-reminder" class="hide dropdown-submenu" disabled="disabled" style="display: none !important;"><a href="javascript:;"> <i class="icon-bell-alt"></i> Nhắc nhở lại tôi</a>
+                    <ul class="dropdown-menu">
+                        <li><a id="process-list-reminder-today" href="javascript:;"><i class="icon-flag red"></i> Hôm nay </a></li>
+                        <li><a id="process-list-reminder-tomorrow" href="javascript:;"><i class="icon-flag orange"></i> Ngày mai </a></li>
+                        <li><a id="process-list-reminder-weekend" href="javascript:;"><i class="icon-flag blue"></i> Cuối tuần </a></li>
+                        <li><a id="process-list-reminder-nextweek" href="javascript:;"><i class="icon-flag green"></i> Ngày này tuần sau </a></li>
+                        <li><a id="process-list-reminder-unknown" href="javascript:;"><i class="icon-flag"></i> Không xác định </a></li>
+                        <li><a id="process-list-reminder-custom" href="javascript:;"><i class="icon-calendar"></i> Tùy chọn... </a></li>
+                        <li><a id="process-list-unfollow" href="javascript:;" disabled="disabled" style="display: none !important;"><i class="icon-remove-circle red"></i> Xóa nhắc nhở </a></li>
+                    </ul>
+                </li>
+                <!--li id="process-list-mark-unreminder" class="hide"><a href="javascript:;"><i class="icon-bell"></i> Không nhắc nhở</a></li-->
+            </ul>
+        </div>
+        <ul id="process-publish-filter-tabs" class="nav nav-tabs hide">
+            <li class="active" data-responsibility="all">
+                <a href="javascript:;" title="Tất cả">
+                    <i class="icon-reorder"></i> Tất cả
+                </a>
+            </li>
+            <li data-responsibility="main">
+                <a href="javascript:;" title="Văn bản cần xử lý">
+                    <i class="icon-edit green"></i> Xử lý
+                </a>
+            </li>
+            <li data-responsibility="watch">
+                <a href="javascript:;" title="Văn bản chuyển để biết">
+                    <i class="icon-eye-open blue"></i> Để biết
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div id="listview-process-list" class="messageList" style="height: 790px;"><div class="b-message-list-wrapper"><div id="listview-process-list-toolbar" class="second-toolbar thm-message-list-top-toolbar" style="padding-right: 2px;white-space:normal"><span style="display: inline-block;float: left;"><label><input id="listview-process-list-check-all" type="checkbox" class="ace"><span class="lbl"></span></label></span><div id="process-list-basic-search">
+        <span class="listview-toolbar input-icon input-icon-right">
+            <select id="process-basic-search-select-situation" data-expand-disabled="true" style="margin-top: -7px;width: 110px;">
+                <option value="" selected="selected">Đang xử lý</option>
+                <option value="returning">&nbsp;&nbsp;VB trả lại</option>
+                <option value="retrieving">&nbsp;&nbsp;VB thu hồi</option>
+                <option value="priority_express">&nbsp;&nbsp;VB hỏa tốc</option>
+                <option value="required_reply">&nbsp;&nbsp;Văn bản phải trả lời</option>
+                <option value="processed">Đã xử lý</option>
+                <option value="tranfered">&nbsp;&nbsp;Đã chuyển</option>
+                <option value="completed">&nbsp;&nbsp;Đã hoàn thành</option>
+                <option value="required_reply_processed">&nbsp;&nbsp;Văn bản phải trả lời</option>
+            </select>
+            <input id="process-list-basic-search-txt-keyword" data-keyword="true" data-expand-disabled="true" onclick="this.select();" type="text" placeholder="Từ khóa tìm kiếm" style="width: 78px;">
+            <i data-action-search="expand" class="icon-caret-down" title="Tìm kiếm nâng cao" style="right: 55px;cursor: pointer"></i>
+            <i data-action-search="search" class="icon-search" title="Tìm kiếm" style="right: 35px;cursor: pointer"></i>
+            <span dropdown-sort="" class="btn-group" style="margin-top: -7px;"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="icon-sort-by-alphabet"></i></button><ul class="dropdown-menu" role="menu"><li class="active" data-field-sort="_default"><a href="javascript:;" style="padding-left: 20px;"><i style="position: absolute;margin: 2px -10px;"></i> Mặc định</a></li><li class="" data-field-sort="serialNumber"><a href="javascript:;" style="padding-left: 20px;"><i style="position: absolute;margin: 2px -10px;"></i> Số đến</a></li><li class="" data-field-sort="signNumber"><a href="javascript:;" style="padding-left: 20px;"><i style="position: absolute;margin: 2px -10px;"></i> Số ký hiệu văn bản</a></li><li class="" data-field-sort="docDate"><a href="javascript:;" style="padding-left: 20px;"><i style="position: absolute;margin: 2px -10px;"></i> Ngày văn bản</a></li><li class="" data-field-sort="category"><a href="javascript:;" style="padding-left: 20px;"><i style="position: absolute;margin: 2px -10px;"></i> Loại văn bản</a></li><li class="" data-field-sort="author"><a href="javascript:;" style="padding-left: 20px;"><i style="position: absolute;margin: 2px -10px;"></i> Cơ quan ban hành</a></li><li class="" data-field-sort="subject"><a href="javascript:;" style="padding-left: 20px;"><i style="position: absolute;margin: 2px -10px;"></i> Trích yếu</a></li><li class="" data-field-sort="deadline"><a href="javascript:;" style="padding-left: 20px;"><i style="position: absolute;margin: 2px -10px;"></i> Hạn xử lý</a></li></ul></span>
+        </span>
+        <div id="process-list-filter-date-ranger"><div style="margin-left: 20px">Ngày nhận từ <a href="javascript:;" class="editable-click" data-field="fromDate" data-original-title="" title="">02/07/2026</a> đến <a href="javascript:;" class="editable-click" data-field="toDate" data-original-title="" title="">02/10/2026</a></div></div>
+    </div></div><div class="mainDelimiter toolbarDelimiter"></div><div id="listview-process-list-list-container" class="b-content" style="height: 665px;"><div id="listview-process-list-no-data" style="text-align: center; font-size: 14px; line-height: 30px; padding: 10px; color: rgb(153, 153, 153); display: none;"><div>Không có dữ liệu để hiển thị</div></div><div id="listview-process-list-list-content" style="overflow: auto; position: relative; height: 665px;" tabindex="0"><div id="listview-process-list-list-view" class="content-wrapper" tabindex="-1"><div data-id="4618169" class="messageListItem processing book selected focused read" data-status="processing"><div class="sidebarParent">&nbsp;</div><div class="delimiter"></div><div class="wrapper"><div class="flagParent"><span><i class="icon-star-empty" title="Bình thường"></i></span></div><div class="dateParent actionHandle dragHandle"><span title="02/10/2026">02/10/2026</span></div><div class="checkedParent"><label><input type="checkbox" class="ace" value="4618169"><span class="lbl"></span></label></div><div class="senderParent"><span class="threadsCountParent fullThreadHandle lastSelected" style="display: none;"><span class="threadsCount"></span><i class="icon-spinner animated" style="display: none;"></i></span><span class="" style="margin-right: 2px;"><i class="icon-file-text color-indoc" title="Văn bản đến"></i></span><span class="bookFlag"><i class="icon-book" title="Đã vào sổ"></i>&nbsp;</span><span class="createFlag"><i class="icon-certificate orange" title="Vừa tạo"></i>&nbsp;</span><span class="ratifiedFlag"><i class="icon-ok-circle" title="Đã thông qua"></i>&nbsp;</span><span class="approvedInFlag"><i class="icon-ok-sign" title="Lãnh đạo đã duyệt"></i>&nbsp;</span><span class="sender">4177/QĐ-UBND</span>&nbsp;</div><div class="attachmentParent actionHandle dragHandle"><span class="attachment"><i class="icon-paper-clip" style="font-size: 16px;"></i></span></div><div class="subjectParent actionHandle dragHandle"><div>UBND tỉnh Gia Lai</div><span class="subject ">[02/10/2026] Quyết định ủy quyền thực hiện một số nhiệm vụ, quyền hạn trong hoạt động đầu tư xây dựng trên địa bàn tỉnh Gia Lai</span><div><span>Số đến: 3188</span></div></div></div></div><div data-id="4617584" class="messageListItem unread processing book" data-status="processing"><div class="sidebarParent">&nbsp;</div><div class="delimiter"></div><div class="wrapper"><div class="flagParent"><span><i class="icon-star-empty" title="Bình thường"></i></span></div><div class="dateParent actionHandle dragHandle"><span title="02/10/2026">02/10/2026</span></div><div class="checkedParent"><label><input type="checkbox" class="ace" value="4617584"><span class="lbl"></span></label></div><div class="senderParent"><span class="threadsCountParent fullThreadHandle lastSelected" style="display: none;"><span class="threadsCount"></span><i class="icon-spinner animated" style="display: none;"></i></span><span class="" style="margin-right: 2px;"><i class="icon-file-text color-indoc" title="Văn bản đến"></i></span><span class="bookFlag"><i class="icon-book" title="Đã vào sổ"></i>&nbsp;</span><span class="createFlag"><i class="icon-certificate orange" title="Vừa tạo"></i>&nbsp;</span><span class="ratifiedFlag"><i class="icon-ok-circle" title="Đã thông qua"></i>&nbsp;</span><span class="approvedInFlag"><i class="icon-ok-sign" title="Lãnh đạo đã duyệt"></i>&nbsp;</span><span class="sender">1439/QĐ-UBND</span>&nbsp;</div><div class="attachmentParent actionHandle dragHandle"><span class="attachment"><i class="icon-paper-clip" style="font-size: 16px;"></i></span></div><div class="subjectParent actionHandle dragHandle"><div>UBND Phường Diên Hồng - tỉnh Gia Lai</div><span class="subject ">[02/10/2026] Về việc mức giảm tiền sử dụng đất cho đối tượng người có công với cách mạng Phạm Thị Thú</span><div><span>Số đến: 12911</span></div></div></div></div></div></div></div><div class="mainDelimiter footerDelimiter"></div><div class="b-footer thm-message-list-bottom-toolbar"><div class="pull-right" style="margin-top: 6px;"><span id="listview-process-list-paging" class="paging" style="white-space: nowrap;"><span id="listview-process-list-paging-listview-process-list-paging-message-info-id"><b>1</b> - <b>2</b> / <b>2</b> </span><div class="btn-group"><button id="listview-process-list-paging-listview-process-list-pagingbtn-first" type="button" class="btn btn-xs btn-default" title="Trang đầu" disabled="disabled"><i class="icon-step-backward"></i></button><button id="listview-process-list-paging-listview-process-list-pagingbtn-prev" type="button" class="btn btn-xs btn-default" title="Trang trước" disabled=""><i class="icon-chevron-left"></i></button><div class="btn-group dropup"><button type="button" class="btn btn-default  dropdown-toggle" data-toggle="dropdown"><span data-page="number">1</span> <span class="caret"></span></button><ul class="dropdown-menu scrollable-menu" role="menu"><li><a>1</a></li></ul></div><button id="listview-process-list-paging-listview-process-list-pagingbtn-next" type="button" class="btn btn-xs btn-default" title="Trang sau" disabled=""><i class="icon-chevron-right"></i></button><button id="listview-process-list-paging-listview-process-list-pagingbtn-last" type="button" class="btn btn-xs btn-default" title="Trang cuối" disabled="disabled"><i class="icon-step-forward"></i></button><button id="listview-process-list-paging-listview-process-list-pagingbtn-refresh" type="button" class="btn btn-xs btn-default" title="Nạp lại"><i class="icon-refresh"></i></button></div></span></div></div></div></div>
+    
+    <div id="process-advance-search" class="dropdown-menu advance-search dropdown-caret">
+        <div class="row-fluid">
+            <div class="span6">
+                <div class="row-fluid">
+                    <label class="ilabel control-label" for="process-advance-search-txt-subject">Trích yếu:</label>
+                    <input type="text" id="process-advance-search-txt-subject" class="span12">
+                </div>
+            </div>
+            <div class="span3">
+                <div class="row-fluid">
+                    <label class="ilabel control-label" for="process-advance-search-select-situation">Trạng thái:</label>
+                    <select id="process-advance-search-select-situation" class="span12">
+                        <option value="" selected="selected">Đang xử lý</option>
+                        <option value="returning">&nbsp;&nbsp;VB trả lại</option>
+                        <option value="retrieving">&nbsp;&nbsp;VB thu hồi</option>
+                        <option value="required_reply">&nbsp;&nbsp;Văn bản phải trả lời</option>
+                        <option value="processed">Đã xử lý</option>
+                        <option value="tranfered">&nbsp;&nbsp;Đã chuyển</option>
+                        <option value="completed">&nbsp;&nbsp;Đã hoàn thành</option>
+                        <option value="required_reply_processed">&nbsp;&nbsp;&nbsp;Văn bản phải trả lời</option>
+
+                    </select>
+                </div>
+            </div>
+            <div class="span3">
+                <div class="row-fluid">
+                    <label class="ilabel control-label" for="process-advance-search-txt-field">Lĩnh vực:</label>
+                    <input type="text" id="process-advance-search-txt-field" class="span12" placeholder="Lĩnh vực">
+                </div>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span3">
+                <div class="row-fluid">
+                    <label class="ilabel control-label" for="process-advance-search-txt-category">Loại văn bản:</label>
+                    <input type="text" id="process-advance-search-txt-category" class="span12" placeholder="Chọn loại văn bản">
+                </div>
+            </div>
+            <div class="span3">
+                <div class="row-fluid">
+                    <label class="ilabel control-label" for="process-advance-search-txt-sign-number">Số ký hiệu:</label>
+                    <input type="text" id="process-advance-search-txt-sign-number" class="span12">
+                </div>
+            </div>
+            <div class="span3">
+                <div class="row-fluid">
+                    <label class="ilabel control-label" for="process-advance-search-txt-author">Cơ quan ban hành/Tác giả:</label>
+                    <input type="text" id="process-advance-search-txt-author" class="span12">
+                </div>
+            </div>
+            <div class="span3">
+                <div class="row-fluid">
+                    <label class="ilabel control-label" for="process-advance-search-txt-doc-signer">Người ký:</label>
+                    <input type="text" id="process-advance-search-txt-doc-signer" class="span12">
+                </div>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span6 box-search-date">
+                <div class="span6">
+                    <div class="row-fluid">
+                        <label class="ilabel control-label" for="process-advance-search-txt-doc-date-from">Ngày văn bản từ ngày:</label>
+                        <div class="row-fluid input-icon input-icon-right date">
+                            <input type="text" id="process-advance-search-txt-doc-date-from" class="span12 date-picker" autocomplete="off">
+                            <i class="icon-calendar"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="span6">
+                    <div class="row-fluid">
+                        <label class="ilabel control-label" for="process-advance-search-txt-doc-date-to">đến ngày:</label>
+                        <div class="row-fluid input-icon input-icon-right date">
+                            <input type="text" id="process-advance-search-txt-doc-date-to" class="span12 date-picker" autocomplete="off">
+                            <i class="icon-calendar"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="span6 box-search-date deadline">
+                <div class="span6">
+                    <div class="row-fluid">
+                        <label class="ilabel control-label" for="process-advance-search-txt-deadline-from">Hạn xử lý từ ngày:</label>
+                        <div class="row-fluid input-icon input-icon-right date">
+                            <input type="text" id="process-advance-search-txt-deadline-from" class="span12 date-picker" autocomplete="off">
+                            <i class="icon-calendar"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="span6">
+                    <div class="row-fluid">
+                        <label class="ilabel control-label" for="process-advance-search-txt-deadline-to">đến ngày:</label>
+                        <div class="row-fluid input-icon input-icon-right date">
+                            <input type="text" id="process-advance-search-txt-deadline-to" class="span12 date-picker" autocomplete="off">
+                            <i class="icon-calendar"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row-fluid" style="padding-bottom: 10px;">
+            <div class="span3">
+                <div class="row-fluid">
+                    <label class="ilabel control-label" for="process-advance-search-txt-sender">
+                        Người gửi <span class="hide">(<span class="required"></span>)</span>:
+                    </label>
+                    <input type="text" id="process-advance-search-txt-sender" class="span12" maxlength="64">
+                </div>
+            </div>
+            <div class="span3">
+                <div class="row-fluid">
+                    <label class="ilabel control-label" for="process-advance-search-txt-security">Độ mật:</label>
+                    <select id="process-advance-search-txt-security" class="span12">
+                        <option value="-1" selected="selected">Tất cả</option>
+                        <option value="0">Bình thường</option>
+                        <option value="1">Mật</option>
+                        <option value="2">Tuyệt mật</option>
+                        <option value="3">Tối mật</option>
+                    </select>
+                </div>
+            </div>
+            <div class="span3">
+                <div class="row-fluid">
+                    <label class="ilabel control-label" for="process-advance-search-txt-publisher-unit">Cấp CQBH:</label>
+                    <input type="text" id="process-advance-search-txt-publisher-unit" class="span12">
+                </div>
+            </div>
+        </div>
+        <div class="row-fluid" style="text-align:center">
+            <button data-action-search="search" type="button" class="btn btn-success btn-small">
+                <i class="icon-search"></i> Tìm kiếm
+            </button>
+            <button data-action-search="close" type="button" class="btn btn-danger btn-small">
+                <i class="icon-remove"></i> Đóng
+            </button>
+        </div>
+    </div>
+
+<div class="ui-resizable-handle ui-resizable-e" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-s" style="z-index: 90;"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" style="z-index: 90;"></div></div>

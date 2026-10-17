@@ -1,0 +1,9 @@
+https://vpdt.gialai.gov.vn/*/smartcloud/document/edocs/qspublishing.cpx Trả ra list các văn bản "Ban hành văn bản"
+
+https://vpdt.gialai.gov.vn/vpub/smartcloud/document/edocs/view.cpx?exeacode={{lastModifierAcode}}&id={{documentId}} View văn bản
+
+https://vpdt.gialai.gov.vn/vpub/smartcloud/docx/download.cpx?docID={{contentUid}}&view=pdf&t={{Unix Timestamp}} Tải văn bản
+
+https://vpdt.gialai.gov.vn/vpub/smartcloud/history/organext/list.cpx?sphere=int_province_comm&exeacode={{lastModifierAcode}} Lấy danh sách các cơ quan ban hành văn bản trong tỉnh
+
+https://vpdt.gialai.gov.vn/vpub/smartcloud/history/organext/list.cpx?sphere=ext_province_comm&exeacode={{lastModifierAcode}} Lấy danh sách các cơ quan ban hành văn bản ngoài tỉnh

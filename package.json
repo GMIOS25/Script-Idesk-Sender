@@ -1,0 +1,16 @@
+{
+  "name": "script-idesk",
+  "version": "3.0.0",
+  "description": "Nhận và chuyển văn bản trên trục công văn Auto-Fill UserScript",
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "build": "node build.mjs",
+    "build:outgoing": "node build-outgoing.mjs",
+    "verify:outgoing": "node scripts/verify-outgoing-backend.mjs",
+    "build:extension": "node extension/build-extension.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  }
+}

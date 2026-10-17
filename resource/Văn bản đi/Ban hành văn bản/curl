@@ -1,0 +1,47 @@
+curl --url ^"https://vpdt.gialai.gov.vn/vpub/smartcloud/comm/nodes/fbyvsphere.cpx^" ^
+  -H ^"accept: */*^" ^
+  -H ^"accept-language: vi-VN,vi;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6,en;q=0.5,ja;q=0.4^" ^
+  -H ^"content-type: application/x-www-form-urlencoded; charset=UTF-8^" ^
+  -b ^"JSESSIONID=loc142.18080~3mL2DzqRt_9-09rsXW_QErdZXUzcRGlG8KSPFsvp.vpdt-stnmt; sl-session=15WoMCyowGprQCxdVSW1WQ==; profile=^\^"eyJsb2dvVXJsIjoiaHR0cHM6Ly92cGR0LmdpYWxhaS5nb3Yudm4vdnB1Yi92cHViL3BsdWdpbi9maXJtbG9nby92aWV3LmNweCIsIm9yZ3ByZWZpeCI6InZwdWIiLCJvcmduYW1lIjoiVUJORCB04buJbmggR2lhIExhaSIsInVzZXJVcmwiOiJodHRwczovL3ZwZHQuZ2lhbGFpLmdvdi52bi9sb3R1cy92cHViL3BhZ2UvaW5kZXguY3B4Iy91c2VyLXByb2ZpbGUiLCJsb2dvdXRVcmwiOiJodHRwczovL3ZwZHQuZ2lhbGFpLmdvdi52bi92cHViL3ZwdWIvdW5pY29ybi9wYWdlL2xvZ291dC5jcHgiLCJkb21haW4iOiJ2cHViLmdpYWxhaS5nb3Yudm4ifQ==^\^"^" ^
+  -H ^"origin: https://vpdt.gialai.gov.vn^" ^
+  -H ^"priority: u=1, i^" ^
+  -H ^"referer: https://vpdt.gialai.gov.vn/vpub/smartcloud/idesk6/page/paperwork/ed/publish-doc.cpx^" ^
+  -H ^"sec-ch-ua: ^\^"Chromium^\^";v=^\^"154^\^", ^\^"Google Chrome^\^";v=^\^"154^\^", ^\^"Not A^(Brand^\^";v=^\^"99^\^"^" ^
+  -H ^"sec-ch-ua-mobile: ?0^" ^
+  -H ^"sec-ch-ua-platform: ^\^"Windows^\^"^" ^
+  -H ^"sec-fetch-dest: empty^" ^
+  -H ^"sec-fetch-mode: cors^" ^
+  -H ^"sec-fetch-site: same-origin^" ^
+  -H ^"user-agent: Mozilla/5.0 ^(Windows NT 10.0; Win64; x64^) AppleWebKit/537.36 ^(KHTML, like Gecko^) Chrome/154.0.0.0 Safari/537.36^" ^
+  -H ^"x-requested-with: XMLHttpRequest^" ^
+  --data-raw ^"exeacode=b45656bc-0146-1000-e3f0-150813121982^&type=transfer^"
+
+curl --url ^"https://vpdt.gialai.gov.vn/vpub/smartcloud/history/organext/list.cpx?sphere=int_province_comm^&exeacode=b45656bc-0146-1000-e3f0-150813121982^" ^
+  -H ^"accept: */*^" ^
+  -H ^"accept-language: vi-VN,vi;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6,en;q=0.5,ja;q=0.4^" ^
+  -b ^"JSESSIONID=loc142.18080~3mL2DzqRt_9-09rsXW_QErdZXUzcRGlG8KSPFsvp.vpdt-stnmt; sl-session=15WoMCyowGprQCxdVSW1WQ==^" ^
+  -H ^"priority: u=1, i^" ^
+  -H ^"referer: https://vpdt.gialai.gov.vn/vpub/smartcloud/idesk6/page/paperwork/ed/publish-doc.cpx^" ^
+  -H ^"sec-ch-ua: ^\^"Chromium^\^";v=^\^"154^\^", ^\^"Google Chrome^\^";v=^\^"154^\^", ^\^"Not A^(Brand^\^";v=^\^"99^\^"^" ^
+  -H ^"sec-ch-ua-mobile: ?0^" ^
+  -H ^"sec-ch-ua-platform: ^\^"Windows^\^"^" ^
+  -H ^"sec-fetch-dest: empty^" ^
+  -H ^"sec-fetch-mode: cors^" ^
+  -H ^"sec-fetch-site: same-origin^" ^
+  -H ^"user-agent: Mozilla/5.0 ^(Windows NT 10.0; Win64; x64^) AppleWebKit/537.36 ^(KHTML, like Gecko^) Chrome/154.0.0.0 Safari/537.36^" ^
+  -H ^"x-requested-with: XMLHttpRequest^"
+
+curl --url ^"https://vpdt.gialai.gov.vn/vpub/smartcloud/history/organext/list.cpx?sphere=ext_province_comm^&exeacode=b45656bc-0146-1000-e3f0-150813121982^" ^
+  -H ^"accept: */*^" ^
+  -H ^"accept-language: vi-VN,vi;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6,en;q=0.5,ja;q=0.4^" ^
+  -b ^"JSESSIONID=loc142.18080~3mL2DzqRt_9-09rsXW_QErdZXUzcRGlG8KSPFsvp.vpdt-stnmt; sl-session=15WoMCyowGprQCxdVSW1WQ==^" ^
+  -H ^"priority: u=1, i^" ^
+  -H ^"referer: https://vpdt.gialai.gov.vn/vpub/smartcloud/idesk6/page/paperwork/ed/publish-doc.cpx^" ^
+  -H ^"sec-ch-ua: ^\^"Chromium^\^";v=^\^"154^\^", ^\^"Google Chrome^\^";v=^\^"154^\^", ^\^"Not A^(Brand^\^";v=^\^"99^\^"^" ^
+  -H ^"sec-ch-ua-mobile: ?0^" ^
+  -H ^"sec-ch-ua-platform: ^\^"Windows^\^"^" ^
+  -H ^"sec-fetch-dest: empty^" ^
+  -H ^"sec-fetch-mode: cors^" ^
+  -H ^"sec-fetch-site: same-origin^" ^
+  -H ^"user-agent: Mozilla/5.0 ^(Windows NT 10.0; Win64; x64^) AppleWebKit/537.36 ^(KHTML, like Gecko^) Chrome/154.0.0.0 Safari/537.36^" ^
+  -H ^"x-requested-with: XMLHttpRequest^"

@@ -1,0 +1,17 @@
+{
+    "idk.edoc.publish": {
+        "processing": 68,
+        "direction": 4,
+        "noneRead": 12,
+        "noneBook": 18,
+        "receiveInDate": 21,
+        "lateInDate": 0,
+        "lated": 0,
+        "signed": 24,
+        "rejectedOrgSto": 0,
+        "reminded": 0,
+        "assigneeLated": 0,
+        "receiverOpinion": 0,
+        "unreadReceived": 0
+    }
+}

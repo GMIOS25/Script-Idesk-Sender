@@ -1,0 +1,18 @@
+node_modules
+dist
+
+# File bundle tự động sinh ra bởi `pnpm run build` (xem build.mjs).
+# KHÔNG commit file này - mỗi lần build nó thay đổi toàn bộ nội dung
+# và sẽ conflict liên tục khi làm việc nhóm qua git.
+src/idesk_automation.user.js
+
+# Thư mục tạm/legacy, không phải một phần của source chính thức.
+temppararell/
+
+#Thư mục test api
+bruno_api_tests/
+
+#Enviroment variable
+.env*
+__pycache__/
+*.pyc
