@@ -1,4 +1,4 @@
-import { selectAttachment, getNumberMatchedAttachments } from '../utils/attachment.js';
+import { selectAttachment, getNumberMatchedAttachments } from './attachment.js';
 
 export const documents = new Map();
 export const internalDirectory = new Map();

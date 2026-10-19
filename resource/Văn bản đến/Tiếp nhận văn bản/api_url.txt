@@ -1,9 +1,0 @@
-https://vpdt.gialai.gov.vn/snnmt/smartcloud/comm/nodes/fbyvsphere.cpx | POST | Danh sách các đơn vị xử lí chính và xử lí phụ (Đơn vị xử lý phụ được chọn nhiều đơn vị còn xử lý chính thì chỉ chọn 1). (fbyvsphere.cpx)
-
-https://vpdt.gialai.gov.vn/snnmt/smartcloud/document/edocs/qsreceiving.cpx | POST | Lấy danh sách toàn bộ văn bản ở mục xử lý văn bản. (qsreceiving.cpx)
-
-https://vpdt.gialai.gov.vn/snnmt/smartcloud/document/edocs/view.cpx?exeacode={{creatorAcode}}&id={{id}} | GET | Xem chi tiết nội dung văn bản (view.cpx) Với creatorAcode và id được lấy từ danh sách văn bản (qsprocess.cpx)
-
-https://vpdt.gialai.gov.vn/snnmt/smartcloud/docx/download.cpx?docID={{contentUid}}&amp;view=pdf&amp;t=1784556557081
-
-https://vpdt.gialai.gov.vn/snnmt/smartcloud/comm/dashboard.cpx?exeacode={{creatorAcode}}&permissions=idk.edoc.receive | GET | Lấy danh sách các mục và số lượng văn bản trong mỗi mục của dashboard. (dashboard.cpx)

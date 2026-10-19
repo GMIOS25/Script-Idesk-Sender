@@ -1,5 +1,5 @@
 import { reviewProblems, recipientFields } from './review.js';
-import { getNumberMatchedAttachments } from '../utils/attachment.js';
+import { getNumberMatchedAttachments } from './attachment.js';
 
 export const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character =>
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);

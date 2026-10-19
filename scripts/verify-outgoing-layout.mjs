@@ -49,7 +49,6 @@ export const createSenderClient = () => ({
 const bundle = await esbuild.build({
     stdin: { contents: "import { createDashboard } from './src/outgoing/dashboard.js'; createDashboard();", resolveDir: root },
     bundle: true, write: false, format: 'iife', target: 'es2020',
-    define: Object.fromEntries(['AUTH_BASE_URL', 'AUTH_USERNAME', 'AUTH_PASSWORD', 'AI_PROVIDER', 'ROUTER_BASE_URL', 'ROUTER_API_KEY', 'ROUTER_POLL_INTERVAL_MS', 'ROUTER_TIMEOUT_MS'].map(key => [`process.env.${key}`, '""'])),
     plugins: [{ name: 'isolated-ui-fixtures', setup(build) {
         build.onLoad({ filter: /outgoing[\\/]idesk\.js$/ }, () => ({ contents: nativeFixture, loader: 'js' }));
         build.onLoad({ filter: /outgoing[\\/]provider\.js$/ }, () => ({ contents: clientFixture, loader: 'js' }));
