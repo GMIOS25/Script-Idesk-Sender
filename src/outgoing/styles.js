@@ -48,6 +48,9 @@ export const styles = `
 .sender-empty { color: var(--sender-muted); padding: 32px 12px; text-align: center; }
 .sender-doc { border: 1px solid var(--sender-border); border-radius: 4px; background: white; margin: 0 0 12px; overflow: hidden; }
 .sender-doc.is-selected { border-color: var(--sender-blue); box-shadow: inset 3px 0 var(--sender-blue); }
+.sender-doc.is-saved { border-color: #86efac; background: #f0fdf4; }
+.sender-doc.is-saved.is-selected { border-color: var(--sender-blue); box-shadow: inset 3px 0 #16a34a; }
+.sender-tag-saved { color: #15803d; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
 #sender-panel .sender-doc-select { border: 0; border-radius: 0; text-align: left; width: 100%; padding: 12px; background: transparent; overflow-wrap: anywhere; }
 .sender-doc-select strong, .sender-doc-select span { display: block; }
 .sender-doc-select span { font-size: 13px; margin-top: 6px; }

@@ -107,3 +107,30 @@ test('recipient roles expose checked and active states beside each selected role
     assert.match(html, /data-assignment="follow"[^>]*checked/);
     assert.doesNotMatch(html, /data-assignment="responsible"[^>]*checked/);
 });
+
+test('renderDocumentList and renderReview display saved status for previously saved documents', () => {
+    const docs = new Map([
+        ['100', { id: '100', eligible: true, subject: 'Văn bản đã xử lý', signNumber: '100/UBND' }],
+        ['200', { id: '200', eligible: true, subject: 'Văn bản mới', signNumber: '200/UBND' }]
+    ]);
+    const savedDocs = { '100': { savedAt: Date.now() - 3600000, feedbackId: 'fb-100' } };
+    const listHtml = renderDocumentList(docs, '100', new Map(), savedDocs);
+    assert.match(listHtml, /is-saved/);
+    assert.match(listHtml, /sender-tag-saved/);
+    assert.match(listHtml, /✓ Đã lưu rà soát/);
+    assert.match(listHtml, />Phân tích lại</);
+
+    const reviewHtmlUnanalyzed = renderReview({ doc: { id: '100', signNumber: '100/UBND', subject: 'Test' } }, savedDocs);
+    assert.match(reviewHtmlUnanalyzed, /sender-tag-saved/);
+    assert.match(reviewHtmlUnanalyzed, /✓ Đã lưu rà soát/);
+    assert.match(reviewHtmlUnanalyzed, />Phân tích lại</);
+
+    const reviewHtmlAnalyzed = renderReview({
+        doc: { id: '100', signNumber: '100/UBND', subject: 'Test' },
+        review: createReview({
+            schema_version: 'outgoing.v1', extraction_status: 'complete', registry_version: 'r', alias_policy_version: 'p',
+            people: [], units: [], unresolved: [], mentions: [], excluded: []
+        })
+    }, savedDocs);
+    assert.match(reviewHtmlAnalyzed, /✓ Đã lưu kết quả rà soát trên backend/);
+});

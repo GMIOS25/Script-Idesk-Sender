@@ -28,6 +28,24 @@ export const createDashboard = () => {
     if (document.getElementById('sender-panel')) return () => {};
     const getSetting = (key, fallback) => typeof GM_getValue === 'function' ? GM_getValue(`outgoing-sender:${key}`, fallback) : fallback;
     let settings = { baseUrl: getSetting('baseUrl', 'http://127.0.0.1:8000'), apiKey: getSetting('apiKey', '') };
+    const getSavedDocs = () => {
+        try {
+            const raw = typeof GM_getValue === 'function' ? GM_getValue('outgoing-sender:savedDocs', '{}') : '{}';
+            return typeof raw === 'string' ? JSON.parse(raw) : (raw || {});
+        } catch {
+            return {};
+        }
+    };
+    const markDocSaved = (docId, info = {}) => {
+        if (!docId) return;
+        try {
+            const map = getSavedDocs();
+            map[String(docId)] = { savedAt: Date.now(), ...info };
+            if (typeof GM_setValue === 'function') GM_setValue('outgoing-sender:savedDocs', JSON.stringify(map));
+        } catch (err) {
+            console.warn('Lưu lịch sử văn bản thất bại:', err);
+        }
+    };
     const sessions = new Map();
     let selectedId = '';
     let busy = false;
@@ -70,7 +88,7 @@ export const createDashboard = () => {
         panel.querySelectorAll('button[type="submit"]').forEach(button => { button.disabled = busy; });
     };
     const renderList = () => {
-        list.innerHTML = renderDocumentList(documents, selectedId, sessions);
+        list.innerHTML = renderDocumentList(documents, selectedId, sessions, getSavedDocs());
         panel.querySelector('#sender-count').textContent = `${[...documents.values()].filter(doc => doc.eligible).length} văn bản`;
         updateBusy();
     };
@@ -83,7 +101,7 @@ export const createDashboard = () => {
         const active = document.activeElement;
         const restoreFocus = detail.contains(active) || sidebar.contains(active);
         const scrolls = ['#sender-detail', '.sender-recipient-list', '.sender-search-matches'].map(selector => [selector, panel.querySelector(selector)?.scrollTop || 0]);
-        detail.innerHTML = renderReview(current());
+        detail.innerHTML = renderReview(current(), getSavedDocs());
         sidebar.innerHTML = renderRecipientPanel(current());
         updateBusy();
         for (const [selector, top] of scrolls) { const node = panel.querySelector(selector); if (node) node.scrollTop = top; }
@@ -182,9 +200,13 @@ export const createDashboard = () => {
             try {
                 const res = await session.client.feedback(session.jobId, payload);
                 session.feedbackId = res.feedback_id;
+                markDocSaved(session.doc.id, { feedbackId: res.feedback_id, signNumber: session.doc.signNumber, applied: true });
             } catch (err) {
                 console.warn('Lưu dữ liệu rà soát tự động không thành công:', err);
+                markDocSaved(session.doc.id, { signNumber: session.doc.signNumber, applied: true });
             }
+        } else {
+            markDocSaved(session.doc.id, { feedbackId: session.feedbackId, signNumber: session.doc.signNumber, applied: true });
         }
         const preserved = Object.entries(result.existing).filter(([, ids]) => ids.length).map(([field, ids]) => `${FIELD_DEFINITIONS.find(item => item.key === field)?.label}: ${ids.length}`);
         session.existingSummary = !session.replaceExisting && preserved.length ? `Đã giữ người nhận có sẵn — ${preserved.join('; ')}. Kiểm tra các mục này trên form.` : '';
@@ -268,20 +290,30 @@ export const createDashboard = () => {
             } else if (action === 'select') await select(button.dataset.id);
             else if (action === 'analyze') await analyze(button.dataset.id);
             else if (action === 'batch') {
-                const ids = [...documents.values()].filter(doc => doc.eligible).map(doc => doc.id);
-                if (!ids.length) throw new Error('Quét danh sách để chọn văn bản đủ điều kiện trước.');
+                const savedMap = getSavedDocs();
+                const eligibleDocs = [...documents.values()].filter(doc => doc.eligible);
+                const pendingDocs = eligibleDocs.filter(doc => !savedMap[String(doc.id)] && !sessions.get(doc.id)?.feedbackId);
+                if (!eligibleDocs.length) throw new Error('Quét danh sách để chọn văn bản đủ điều kiện trước.');
+                if (!pendingDocs.length) {
+                    status('Tất cả văn bản đủ điều kiện đã được lưu rà soát trước đó.');
+                    return;
+                }
+                const ids = pendingDocs.map(doc => doc.id);
+                const skippedCount = eligibleDocs.length - pendingDocs.length;
+                status(`Bắt đầu phân tích ${ids.length} văn bản mới${skippedCount ? ` (bỏ qua ${skippedCount} đã lưu)` : ''}…`);
                 let completed = 0;
                 for (const id of ids) {
                     if (stopped) break;
                     try { await analyze(id); completed++; } catch (error) { status(`Bỏ qua ${id}: ${error.message}`); }
                 }
-                status(`Đã phân tích ${completed}/${ids.length} văn bản${stopped ? '; đã dừng theo yêu cầu' : ''}.`);
+                status(`Đã phân tích ${completed}/${ids.length} văn bản${skippedCount ? ` (bỏ qua ${skippedCount} đã lưu)` : ''}${stopped ? '; đã dừng theo yêu cầu' : ''}.`);
             } else if (action === 'apply') await apply();
             else if (action === 'feedback') {
                 const session = current();
                 const payload = await verifyReview(session);
                 const result = await session.client.feedback(session.jobId, payload);
                 session.feedbackId = result.feedback_id;
+                markDocSaved(session.doc.id, { feedbackId: result.feedback_id, signNumber: session.doc.signNumber });
                 status('Đã lưu kết quả rà soát trên backend.');
             }
         }).then(() => {

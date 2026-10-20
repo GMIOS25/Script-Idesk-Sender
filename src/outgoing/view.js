@@ -25,29 +25,37 @@ export const renderRecipientPanel = session => {
         <section class="sender-chosen"><div class="sender-chosen-heading"><h2 id="sender-chosen-title">Danh sách người nhận <span class="sender-badge">${recipients.length}</span></h2></div><div class="sender-recipient-list" tabindex="0" aria-labelledby="sender-chosen-title">${rows || '<div class="sender-empty">Chưa có người nhận.<br>Tra cứu danh bạ phía trên để bổ sung.</div>'}</div></section>`;
 };
 
-export const renderDocumentList = (documents, selectedId, sessions) => {
+export const renderDocumentList = (documents, selectedId, sessions, savedDocs = {}) => {
     const docs = [...documents.values()].filter(doc => doc.eligible).sort((a, b) => (a.page - b.page) || (a.pageIndex - b.pageIndex));
     if (!docs.length) return '<div class="sender-empty">Chưa có văn bản đủ điều kiện.<br>Quét danh sách để chọn văn bản <strong>Đã chuyển nội bộ</strong> hoặc <strong>Đã vào sổ</strong> có tài liệu chính khớp số văn bản.</div>';
     return docs.map(doc => {
         const session = sessions.get(doc.id);
-        const status = session?.processing ? 'Đang phân tích…' : session?.review ? (session.reviewed ? 'Đã rà soát' : 'Cần rà soát') : session?.error ? 'Có lỗi' : 'Chưa phân tích';
-        return `<article class="sender-doc ${selectedId === doc.id ? 'is-selected' : ''}"><button type="button" class="sender-doc-select" data-action="select" data-id="${e(doc.id)}"><strong>${e(doc.signNumber || 'Chưa có số/ký hiệu')}</strong><span>${e(doc.subject || 'Chưa có trích yếu')}</span></button><div class="sender-doc-meta"><span>${e(status)}</span><button type="button" data-action="analyze" data-id="${e(doc.id)}" ${session?.processing ? 'disabled' : ''}>Phân tích</button></div></article>`;
+        const saved = savedDocs[String(doc.id)];
+        const isSaved = Boolean(session?.feedbackId || saved);
+        const status = session?.processing ? 'Đang phân tích…'
+            : isSaved ? 'Đã lưu rà soát'
+            : session?.review ? (session.reviewed ? 'Đã rà soát' : 'Cần rà soát')
+            : session?.error ? 'Có lỗi'
+            : 'Chưa phân tích';
+        return `<article class="sender-doc ${selectedId === doc.id ? 'is-selected' : ''} ${isSaved ? 'is-saved' : ''}"><button type="button" class="sender-doc-select" data-action="select" data-id="${e(doc.id)}"><strong>${e(doc.signNumber || 'Chưa có số/ký hiệu')}</strong><span>${e(doc.subject || 'Chưa có trích yếu')}</span></button><div class="sender-doc-meta"><span class="${isSaved ? 'sender-tag-saved' : ''}">${isSaved ? '✓ ' : ''}${e(status)}</span><button type="button" data-action="analyze" data-id="${e(doc.id)}" ${session?.processing ? 'disabled' : ''}>${isSaved ? 'Phân tích lại' : 'Phân tích'}</button></div></article>`;
     }).join('');
 };
 
-const metadataHtml = session => {
+const metadataHtml = (session, savedDocs = {}) => {
     const doc = session.doc;
     const attachments = doc.selectionMarker === 'book' ? getNumberMatchedAttachments(doc) : (doc.attachments || []);
-    return `<h2>${e(doc.signNumber || 'Văn bản đi')}</h2><p class="sender-subject">${e(doc.subject)}</p><div class="sender-meta"><span>ID ${e(doc.id)}</span><span>${doc.selectionMarker === 'book' ? 'Đã vào sổ' : 'Đã chuyển nội bộ'}</span>${Number(doc.externalTransfer) > 0 ? '<span>Đã gửi liên thông</span>' : ''}</div>
+    const saved = savedDocs[String(doc?.id)];
+    return `<h2>${e(doc.signNumber || 'Văn bản đi')}</h2><p class="sender-subject">${e(doc.subject)}</p><div class="sender-meta"><span>ID ${e(doc.id)}</span><span>${doc.selectionMarker === 'book' ? 'Đã vào sổ' : 'Đã chuyển nội bộ'}</span>${Number(doc.externalTransfer) > 0 ? '<span>Đã gửi liên thông</span>' : ''}${saved ? `<span class="sender-tag-saved">✓ Đã lưu rà soát (${new Date(saved.savedAt).toLocaleDateString('vi-VN')})</span>` : ''}</div>
         <label class="sender-label">Tài liệu chính<select data-setting="attachment">${attachments.map(item => `<option value="${e(item.contentUid)}" ${item.contentUid === session.attachment?.contentUid ? 'selected' : ''}>${e(item.name)}${item.signed === 'Y' ? ' · Đã ký' : ''}</option>`).join('') || '<option value="">Không có tài liệu chính phù hợp</option>'}</select></label>
         ${session.previewUrl ? `<a href="${e(session.previewUrl)}" target="_blank" rel="noopener">Mở PDF để đối chiếu</a>` : ''}`;
 };
 
-export const renderReview = session => {
+export const renderReview = (session, savedDocs = {}) => {
     if (!session) return '<div class="sender-empty">Chọn một văn bản để xem tài liệu và kết quả phân tích.</div>';
-    const meta = metadataHtml(session);
+    const meta = metadataHtml(session, savedDocs);
+    const isSaved = Boolean(session.feedbackId || savedDocs[String(session.doc?.id)]);
     if (session.processing) return `${meta}<p role="status">Đang phân tích tài liệu. ${e(session.progress || '')}</p>`;
-    if (!session.review) return `${meta}${session.error ? `<p class="sender-warning" role="alert">${e(session.error)}</p>` : ''}<p>Gửi tài liệu chính đến backend để xác định người và đơn vị nhận.</p><button type="button" class="sender-primary" data-action="analyze" data-id="${e(session.doc.id)}" ${!session.attachment ? 'disabled' : ''}>Phân tích văn bản này</button>`;
+    if (!session.review) return `${meta}${session.error ? `<p class="sender-warning" role="alert">${e(session.error)}</p>` : ''}<p>Gửi tài liệu chính đến backend để xác định người và đơn vị nhận.</p><button type="button" class="sender-primary" data-action="analyze" data-id="${e(session.doc.id)}" ${!session.attachment ? 'disabled' : ''}>${isSaved ? 'Phân tích lại' : 'Phân tích văn bản này'}</button>`;
     const review = session.review;
     const result = review.result;
     const problems = reviewProblems(review);
@@ -71,5 +79,5 @@ export const renderReview = session => {
         <label class="sender-check"><input type="checkbox" data-setting="reviewed" ${session.reviewed ? 'checked' : ''}> Tôi đã đối chiếu PDF, người nhận và các trường sẽ điền.</label>
         <label class="sender-check"><input type="checkbox" data-setting="replace" ${session.replaceExisting ? 'checked' : ''}> Thay thế người nhận sẵn có ở các trường được điền.</label>
         <div class="sender-actions"><button type="button" class="sender-primary" data-action="apply" ${!session.reviewed || problems.length ? 'disabled' : ''}>Điền vào iDesk</button><button type="button" data-action="feedback" ${!session.reviewed || problems.length ? 'disabled' : ''}>Lưu kết quả rà soát</button><button type="button" data-action="analyze" data-id="${e(session.doc.id)}">Phân tích lại</button></div>
-        ${session.feedbackId ? '<p class="sender-success">Đã lưu kết quả rà soát trên backend.</p>' : ''}${session.applied ? `<p class="sender-success">Đã điền ${session.applied.length} lựa chọn. Kiểm tra form iDesk rồi bấm Đồng ý để gửi.</p>${session.existingSummary ? `<p>${e(session.existingSummary)}</p>` : ''}` : ''}${session.error ? `<p class="sender-warning" role="alert">${e(session.error)}</p>` : ''}`;
+        ${isSaved ? '<p class="sender-success">✓ Đã lưu kết quả rà soát trên backend.</p>' : ''}${session.applied ? `<p class="sender-success">Đã điền ${session.applied.length} lựa chọn. Kiểm tra form iDesk rồi bấm Đồng ý để gửi.</p>${session.existingSummary ? `<p>${e(session.existingSummary)}</p>` : ''}` : ''}${session.error ? `<p class="sender-warning" role="alert">${e(session.error)}</p>` : ''}`;
 };
