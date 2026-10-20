@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { renderDocumentList, renderReview } from '../src/outgoing/view.js';
-import { createReview } from '../src/outgoing/review.js';
+import { createReview, assignRecipient, setDecision } from '../src/outgoing/review.js';
 import * as view from '../src/outgoing/view.js';
 
 for (const state of ['pending', 'processing', 'review']) {
@@ -69,4 +69,41 @@ test('keeps lookup and recipient assignments outside the scrolling document revi
     assert.ok(right.includes('Sở &lt;Nội vụ&gt;'));
     assert.ok(right.includes('Đã thêm'));
     assert.ok(!right.includes('data-action="search-add"'), 'selected identities cannot be added again');
+});
+
+test('warnings render as read-only alerts and do not disable filling a reviewed result', () => {
+    const unit = { recipient_id: 'u', source_id: '1', recipient_type: 'INT_PROVINCE_UNIT', sphere: 'int_province_comm', code: 'H21', name: 'Sở Nội vụ' };
+    const review = createReview({ schema_version: 'outgoing.v1', extraction_status: 'partial', needs_review: true,
+        registry_version: 'r', alias_policy_version: 'p', people: [], units: [unit], review_reasons: ['extraction_partial'] });
+    const html = renderReview({ doc: { id: '42' }, review, reviewed: true });
+    assert.match(html, /role="alert"[^>]*>[\s\S]*Chưa đọc đầy đủ tài liệu/);
+    assert.doesNotMatch(html, /data-global-reason|<textarea/);
+    assert.match(html, /data-action="apply"\s*>/);
+    assert.match(html, /data-action="feedback"\s*>/);
+});
+
+test('a group decision shows independent checked choices including manual directory additions', () => {
+    const people = ['CT', 'PCT1', 'PCT2'].map((name, index) => ({ recipient_id: `p${index}`, source_id: `${index}`, recipient_type: 'INTERNAL_PERSON', sphere: 'internal', code: name, name }));
+    const unit = { recipient_id: 'u', source_id: '4', recipient_type: 'INT_PROVINCE_UNIT', sphere: 'int_province_comm', code: 'H21', name: 'Sở <Nội vụ>' };
+    const review = createReview({ schema_version: 'outgoing.v1', extraction_status: 'complete', registry_version: 'r', alias_policy_version: 'p',
+        people: [people[0]], units: [unit], unresolved: [{ mention_id: 'm1', raw: 'CT và PCT UBND tỉnh', candidates: people }] });
+    setDecision(review, { mention_id: 'm1', action: 'resolve', recipient_ids: ['p0', 'u'] });
+    const html = renderReview({ doc: { id: '42' }, review });
+    assert.equal((html.match(/data-decision-recipients="m1"/g) || []).length, 4);
+    assert.match(html, /type="checkbox"[^>]*data-decision-recipients="m1"[^>]*value="p0"[^>]*checked/);
+    assert.match(html, /type="checkbox"[^>]*data-decision-recipients="m1"[^>]*value="u"[^>]*checked/);
+    assert.match(html, /Đã chọn 2 người\/đơn vị/);
+    assert.match(html, /Sở &lt;Nội vụ&gt;/);
+    assert.doesNotMatch(html, /<select multiple/);
+});
+
+test('recipient roles expose checked and active states beside each selected role', () => {
+    const person = { recipient_id: 'p', source_id: '1', recipient_type: 'INTERNAL_PERSON', sphere: 'internal', code: 'p1', name: 'Nguyễn Văn An' };
+    const review = createReview({ schema_version: 'outgoing.v1', extraction_status: 'complete', registry_version: 'r', alias_policy_version: 'p', people: [person] });
+    assignRecipient(review, 'p', ['save', 'follow']);
+    const html = view.renderRecipientPanel({ review });
+    assert.equal((html.match(/class="sender-choice is-selected"/g) || []).length, 2);
+    assert.match(html, /data-assignment="save"[^>]*checked/);
+    assert.match(html, /data-assignment="follow"[^>]*checked/);
+    assert.doesNotMatch(html, /data-assignment="responsible"[^>]*checked/);
 });

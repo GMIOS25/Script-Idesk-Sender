@@ -1,5 +1,11 @@
 # Ban hành văn bản iDesk · AI Sender
 
+## 1.3.0 — 2026-10-20
+
+- Cảnh báo cần đối chiếu chỉ hiển thị để tham khảo, không yêu cầu ghi chú hoặc xác nhận từng cảnh báo trước khi điền/lưu kết quả. Cập nhật backend cùng userscript để áp dụng cả phía API.
+- Mỗi mục cần quyết định có các checkbox cho phép chọn nhiều người/đơn vị, kể cả người nhận bổ sung từ danh bạ; hiển thị số lượng đã chọn và cho bỏ chọn từng người.
+- Các vai trò người nhận có checkbox luôn hiển thị trên iDesk, nền và viền nổi bật khi được chọn. Có thể thao tác bằng bàn phím.
+
 ## 1.2.2 — 2026-10-17
 
 - Xóa ô mã phòng khỏi giao diện tài liệu trước, trong và sau khi phân tích; giữ các thay đổi bố cục hiện tại.

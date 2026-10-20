@@ -75,6 +75,19 @@ export const setDecision = (review, decision) => {
     }
 };
 
+export const setDecisionRecipient = (review, mentionId, recipient, included) => {
+    const previous = review.decisions.get(mentionId);
+    const ids = new Set(previous?.action === 'resolve' ? previous.recipient_ids : []);
+    if (included) {
+        setRecipient(review, recipient, true, { mentionId });
+        ids.add(recipient.recipient_id);
+    } else ids.delete(recipient.recipient_id);
+    setDecision(review, {
+        mention_id: mentionId, action: ids.size ? 'resolve' : '', recipient_ids: [...ids],
+        note: previous?.action === 'resolve' ? previous.note : ''
+    });
+};
+
 export const reviewProblems = review => {
     const problems = [];
     if (!review.recipients.size) problems.push('Chưa có người nhận trong danh sách cuối.');
@@ -90,17 +103,6 @@ export const reviewProblems = review => {
         const omitted = ['exclude', 'accept_missing'].includes(decision?.action)
             && !!decision.note && decision.recipient_ids.length === 0;
         if (!resolved && !omitted) problems.push(`Cần rà soát ${item.mention_id}: ${item.raw}.`);
-    }
-    const reasons = [...new Set(review.result.review_reasons || [])];
-    if (review.result.extraction_status !== 'complete') {
-        const reason = `extraction_${review.result.extraction_status}`;
-        if (!reasons.includes(reason)) reasons.push(reason);
-    }
-    for (const reason of reasons) {
-        const decision = review.decisions.get(`reason:${reason}`);
-        if (decision?.action !== 'accept_missing' || !decision.note || decision.recipient_ids.length) {
-            problems.push(`Cần rà soát cảnh báo ${reason}.`);
-        }
     }
     return problems;
 };

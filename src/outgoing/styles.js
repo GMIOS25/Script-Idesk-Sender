@@ -26,7 +26,8 @@ export const styles = `
 #sender-panel .sender-primary:hover:not(:disabled) { background: #114962; }
 #sender-panel :focus-visible { outline: 3px solid #1d82ac; outline-offset: 2px; }
 #sender-panel input:not([type=checkbox]), #sender-panel select, #sender-panel textarea { width: 100%; min-width: 0; padding: 8px; border: 1px solid #aabcc7; border-radius: 4px; background: white; color: var(--sender-ink); margin: 4px 0 0; }
-#sender-panel input[type=checkbox] { width: 16px; height: 16px; flex-shrink: 0; margin: 0 6px 0 0; vertical-align: middle; accent-color: var(--sender-blue); }
+/* iDesk skins hide native checkboxes to draw their own .lbl; restore ours. */
+#sender-panel input[type=checkbox] { appearance: auto !important; display: inline-block !important; position: static !important; opacity: 1 !important; visibility: visible !important; clip: auto !important; clip-path: none !important; width: 16px; height: 16px; flex-shrink: 0; margin: 0 6px 0 0; vertical-align: middle; accent-color: var(--sender-blue); }
 #sender-panel textarea { resize: vertical; }
 .sender-toolbar { padding: 8px 12px; border-bottom: 1px solid var(--sender-border); display: flex; align-items: center; gap: 8px; flex-shrink: 0; cursor: grab; user-select: none; }
 .sender-toolbar.sender-dragging { cursor: grabbing; }
@@ -63,7 +64,16 @@ export const styles = `
 .sender-review-item { padding: 16px; border: 1px solid #ead294; border-radius: 4px; margin: 12px 0; }
 .sender-review-heading { display: flex; align-items: start; justify-content: space-between; gap: 12px; }
 .sender-review-heading button { flex-shrink: 0; }
-.sender-candidates, .sender-actions { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+.sender-actions { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+#sender-panel .sender-candidates { display: grid; gap: 8px; min-width: 0; max-height: 280px; overflow: auto; border: 0; padding: 0; margin: 12px 0; }
+#sender-panel .sender-candidates legend { font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+#sender-panel .sender-choice { display: flex; align-items: center; gap: 4px; min-height: 40px; padding: 8px; margin: 0; border: 1px solid var(--sender-border); border-radius: 4px; background: white; color: var(--sender-ink); font-weight: 400; cursor: pointer; }
+#sender-panel .sender-choice span { min-width: 0; overflow-wrap: anywhere; }
+#sender-panel .sender-choice small { display: block; font-size: 12px; color: var(--sender-muted); }
+#sender-panel .sender-choice:hover { border-color: var(--sender-blue); }
+#sender-panel .sender-choice.is-selected { background: var(--sender-tint); border-color: var(--sender-blue); box-shadow: inset 3px 0 var(--sender-blue); font-weight: 600; }
+#sender-panel .sender-choice:focus-within { outline: 2px solid var(--sender-blue); outline-offset: 2px; }
+#sender-panel .sender-selection-count { font-size: 12px; color: var(--sender-muted); margin: 8px 0; }
 #sender-panel blockquote { font-size: 13px; margin: 8px 0; padding: 8px 12px; background: var(--sender-surface); border-left: 3px solid #a9c5d3; overflow-wrap: anywhere; }
 #sender-panel details { margin: 16px 0; }
 #sender-panel summary { cursor: pointer; font-weight: 600; }
@@ -94,7 +104,6 @@ export const styles = `
 .sender-recipient { border-bottom: 1px solid var(--sender-border); padding: 12px 4px; margin: 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
 .sender-remove { align-self: start; }
 .sender-assignments { min-width: 0; grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 8px; border: 0; padding: 0; margin: 0; font-size: 13px; }
-.sender-assignments label { display: flex; align-items: center; min-height: 28px; font-weight: 400; margin: 0; }
 
 @media (max-width: 1100px) {
     .sender-body { grid-template-columns: 184px minmax(0, 1fr) 340px; }

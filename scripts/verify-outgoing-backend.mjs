@@ -96,8 +96,7 @@ async function main() {
         final_recipients: analyzed.result.people.map(({ recipient_id, recipient_type, sphere, code }) => ({ recipient_id, recipient_type, sphere, code })),
         field_assignments: [{ recipient_id: 'internal_270', field: 'follow' }, { recipient_id: 'internal_341', field: 'save' }],
         review_decisions: [
-            ...analyzed.result.unresolved.map(mention => ({ mention_id: mention.mention_id, action: 'accept_missing', note: 'Synthetic unresolved fixture reviewed.', recipient_ids: [] })),
-            ...analyzed.result.review_reasons.map(reason => ({ mention_id: `reason:${reason}`, action: 'accept_missing', note: 'Synthetic offline extraction reviewed.', recipient_ids: [] }))
+            ...analyzed.result.unresolved.map(mention => ({ mention_id: mention.mention_id, action: 'accept_missing', note: 'Synthetic unresolved fixture reviewed.', recipient_ids: [] }))
         ], edits: [], confirmed: true
     };
     const feedback = await client.feedback(analyzed.jobId, payload);

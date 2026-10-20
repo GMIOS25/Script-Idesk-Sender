@@ -14,13 +14,15 @@ await mkdir(output, { recursive: true });
 const unit = (name, index) => ({ recipient_id: `unit-${index}`, source_id: `source-${index}`, recipient_type: 'INT_PROVINCE_UNIT', sphere: 'int_province_comm', code: `H21.${index}`, name });
 const units = ['Sở Nội vụ', 'Sở Tài chính', 'Sở Xây dựng', 'Sở Công Thương', 'Sở Tư pháp', 'Sở Y tế', 'Sở Giáo dục và Đào tạo', 'Sở Văn hóa, Thể thao và Du lịch', 'Sở Khoa học và Công nghệ', 'Thanh tra tỉnh', 'Văn phòng UBND tỉnh', 'Ban Quản lý Khu kinh tế'].map(unit);
 const person = { recipient_id: 'person-1', source_id: '1', recipient_type: 'INTERNAL_PERSON', sphere: 'internal', code: 'chuyenviendanthu', name: 'Nguyễn Văn An', display_name: 'Nguyễn Văn An · Chuyên viên Văn thư' };
+const leaders = [person, ...['Phó Chủ tịch thứ nhất', 'Phó Chủ tịch thứ hai'].map((name, i) => ({ ...person, recipient_id: `deputy-${i}`, source_id: `deputy-${i}`, code: `pct${i}`, name, display_name: name }))];
 const manual = unit('Sở Nông nghiệp và Môi trường', 99);
 const result = {
-    schema_version: 'outgoing.v1', document_id: '339', job_id: 'job-1', extraction_status: 'complete',
+    schema_version: 'outgoing.v1', document_id: '339', job_id: 'job-1', extraction_status: 'partial',
     registry_version: 'registry-1', alias_policy_version: 'policy-1', needs_review: true,
-    people: [person], units, mentions: [], excluded: [], review_reasons: [],
+    people: [person], units, mentions: [], excluded: [], review_reasons: ['extraction_partial'],
     unresolved: Array.from({ length: 8 }, (_, i) => ({ mention_id: `m${i}`, raw: i === 7 ? manual.name : `Đơn vị được nhắc tại mục ${i + 1}`, reason: 'no_match', candidates: [], evidence: [{ page: i + 1, raw: 'Kính gửi các sở, ban, ngành; đề nghị phối hợp rà soát và tổng hợp kết quả thực hiện nhiệm vụ được giao.' }] }))
 };
+Object.assign(result.unresolved[0], { raw: 'CT và PCT UBND tỉnh', reason: 'ambiguous', candidates: leaders });
 const nativeFixture = `
 export const context = { basePath: '/vpub/smartcloud' };
 export const internalDirectory = new Map();
@@ -39,6 +41,8 @@ const clientFixture = `
 export const documentMetadata = (doc, attachment) => ({ document_id: doc.id, attachment_content_uid: attachment.contentUid });
 export const createSenderClient = () => ({
     health: async () => ({}),
+    checkVersions: async () => {},
+    feedback: async (jobId, body) => { window.reviewFeedback = body; return { feedback_id: 'verified-feedback' }; },
     analyze: async () => ({ jobId: 'job-1', metadata: { document_id: '339', attachment_content_uid: 'pdf-339' }, result: ${JSON.stringify(result)} }),
     searchRecipients: async query => {
         await new Promise(resolve => setTimeout(resolve, 120));
@@ -54,7 +58,7 @@ const bundle = await esbuild.build({
         build.onLoad({ filter: /outgoing[\\/]provider\.js$/ }, () => ({ contents: clientFixture, loader: 'js' }));
     } }]
 });
-const html = `<!doctype html><html lang="vi"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kiểm tra giao diện ban hành văn bản · dữ liệu mẫu</title><body style="margin:0;background:#e8eef2"><script>${bundle.outputFiles[0].text.replaceAll('</script', '<\\/script')}</script></body></html>`;
+const html = `<!doctype html><html lang="vi"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kiểm tra giao diện ban hành văn bản · dữ liệu mẫu</title><style>/* Simulate the native skin hiding inputs in favor of .lbl. */ input[type=checkbox] { opacity: 0 !important; position: absolute !important; appearance: none !important; }</style><body style="margin:0;background:#e8eef2"><script>${bundle.outputFiles[0].text.replaceAll('</script', '<\\/script')}</script></body></html>`;
 await writeFile(new URL('preview.html', output), html);
 const browser = await chromium.launch({ headless: true, ...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE } : { channel: 'chrome' }) });
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
@@ -98,6 +102,25 @@ try {
     assert.equal(await page.locator('[data-setting="department"]').count(), 0);
     assert.equal(await page.getByText('Mã phòng đã xác minh', { exact: false }).count(), 0);
     assert.equal(await page.locator('.sender-recipient').count(), 13);
+    const groupChoice = id => page.locator(`input[data-decision-recipients="m0"][value="${id}"]`);
+    for (const leader of leaders) await groupChoice(leader.recipient_id).check();
+    assert.equal(await page.locator('input[data-decision-recipients="m0"]:checked').count(), 3);
+    assert.equal(await page.locator('.sender-recipient').count(), 15);
+    assert.equal(await page.locator('.sender-selection-count').first().innerText(), 'Đã chọn 3 người/đơn vị');
+    await page.locator('[data-assignment="save"][data-recipient-id="person-1"]').check();
+    await page.screenshot({ path: fileURLToPath(new URL('group-selection.png', output)) });
+    await page.locator('[data-assignment="save"][data-recipient-id="person-1"]').uncheck();
+    assert.equal(await page.locator('[data-assignment="save"][data-recipient-id="person-1"]').evaluate(node => node.closest('label').classList.contains('is-selected')), false);
+    await groupChoice('deputy-0').focus();
+    await page.keyboard.press('Space');
+    assert.equal(await groupChoice('deputy-0').isChecked(), false);
+    assert.equal(await groupChoice('deputy-1').isChecked(), true);
+    assert.equal(await page.locator('.sender-recipient').count(), 14);
+    for (const leader of [leaders[0], leaders[2]]) await groupChoice(leader.recipient_id).uncheck();
+    assert.equal(await page.locator('.sender-recipient').count(), 13, 'Suggested identity survives deselection, automatic candidates leave');
+    assert.match(await page.locator('.sender-warning[role="alert"]').innerText(), /không cần phản hồi/);
+    assert.equal(await page.locator('[data-global-reason]').count(), 0);
+    console.log('PASS: independent group choices, keyboard deselection and read-only warnings');
     await detail.evaluate(node => { node.scrollTop = 900; });
     const documentScroll = await top(detail);
     const queryBox = await query.boundingBox();
@@ -127,6 +150,10 @@ try {
     const assignment = page.locator('[data-assignment="save"]').first();
     await assignment.check();
     assert.equal(await assignment.isChecked(), true, 'Assignments still work in the right panel');
+    assert.equal(await assignment.evaluate(node => getComputedStyle(node).opacity), '1', 'Checkbox stays visible under the native skin');
+    assert.equal(await assignment.evaluate(node => getComputedStyle(node).position), 'static');
+    assert.equal(await assignment.evaluate(node => getComputedStyle(node).appearance), 'auto');
+    assert.equal(await assignment.evaluate(node => node.closest('label').classList.contains('is-selected')), true);
     assert.equal(await assignment.evaluate(node => node === document.activeElement), true, 'Assignment retains keyboard focus');
     await page.keyboard.press('Tab');
     assert.equal(await page.locator('[data-assignment="participants"]').first().evaluate(node => node === document.activeElement), true);
@@ -156,6 +183,20 @@ try {
     assert.match(accessibility, /searchbox "Tên, chức danh hoặc mã đơn vị"/);
     assert.match(accessibility, /checkbox "Chuyển để biết" \[checked\]/);
     console.log('PASS: document isolation and accessible search/assignment labels');
+
+    for (const item of result.unresolved) {
+        await page.locator(`[data-decision-action="${item.mention_id}"]`).selectOption('exclude');
+        await page.locator(`[data-decision-note="${item.mention_id}"]`).fill('Đã đối chiếu, không thuộc nơi nhận.');
+        await page.locator(`[data-decision-note="${item.mention_id}"]`).press('Tab');
+    }
+    await page.locator('[data-setting="reviewed"]').check();
+    assert.equal(await page.locator('[data-action="apply"]').isEnabled(), true, 'Warnings do not block automation fill');
+    await page.locator('[data-action="feedback"]').click();
+    await detail.getByText('Đã lưu kết quả rà soát trên backend.', { exact: true }).waitFor();
+    const decisions = await page.evaluate(() => window.reviewFeedback.review_decisions);
+    assert.equal(decisions.length, 8);
+    assert.ok(decisions.every(item => !item.mention_id.startsWith('reason:')));
+    console.log('PASS: confirmed review and feedback need no warning acknowledgements');
 
     for (const width of [1440, 1024, 768, 375, 320]) {
         await page.setViewportSize({ width, height: 900 });

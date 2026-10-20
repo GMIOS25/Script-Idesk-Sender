@@ -1,6 +1,6 @@
 import { documents, context, scanDocuments, ensureDocumentDetails, showDocument, isDocumentEligible, chooseAttachment, downloadPDF, primeDirectories, getTenantId, fetchLookupPayload } from './idesk.js';
 import { createSenderClient, documentMetadata } from './provider.js';
-import { createReview, assignRecipient, setRecipient, setDecision, buildFeedback } from './review.js';
+import { createReview, assignRecipient, setRecipient, setDecision, setDecisionRecipient, buildFeedback } from './review.js';
 import { prepareOutgoingForm, FIELD_DEFINITIONS } from './form.js';
 import { renderDocumentList, renderReview, renderRecipientPanel, escapeHtml } from './view.js';
 import { styles } from './styles.js';
@@ -166,7 +166,7 @@ export const createDashboard = () => {
     const apply = async () => {
         const session = current();
         if (session) { session.applied = null; session.existingSummary = ''; }
-        await verifyReview(session);
+        const payload = await verifyReview(session);
         session.doc.detailsLoaded = false;
         const doc = await ensureDocumentDetails(session.doc.id);
         const nativeAttachment = (doc.attachments || []).find(item => item.contentUid === session.attachment.contentUid);
@@ -178,6 +178,14 @@ export const createDashboard = () => {
         await session.client.checkVersions(session.review.result);
         const result = await prepareOutgoingForm({ doc, recipients: [...session.review.recipients.values()], assignments: session.review.assignments, replaceExisting: session.replaceExisting, onStatus: status });
         session.applied = result.applied;
+        if (!session.feedbackId && session.client && session.jobId) {
+            try {
+                const res = await session.client.feedback(session.jobId, payload);
+                session.feedbackId = res.feedback_id;
+            } catch (err) {
+                console.warn('Lưu dữ liệu rà soát tự động không thành công:', err);
+            }
+        }
         const preserved = Object.entries(result.existing).filter(([, ids]) => ids.length).map(([field, ids]) => `${FIELD_DEFINITIONS.find(item => item.key === field)?.label}: ${ids.length}`);
         session.existingSummary = !session.replaceExisting && preserved.length ? `Đã giữ người nhận có sẵn — ${preserved.join('; ')}. Kiểm tra các mục này trên form.` : '';
         status('Đã điền vào form iDesk. Kiểm tra người nhận rồi bấm Đồng ý để gửi.');
@@ -231,16 +239,14 @@ export const createDashboard = () => {
             query.form.requestSubmit();
             return;
         }
-        if (action === 'remove-recipient' || action === 'candidate' || action === 'search-add') {
+        if (action === 'remove-recipient' || action === 'search-add') {
             const session = current();
             if (!session?.review) return;
             if (action === 'remove-recipient') setRecipient(session.review, session.review.recipients.get(button.dataset.recipientId), false);
             else {
-                const mention = session.review.result.unresolved.find(item => item.mention_id === button.dataset.mentionId);
-                const recipient = action === 'candidate' ? mention?.candidates.find(item => item.recipient_id === button.dataset.recipientId) : session.searchResults?.find(item => item.recipient_id === button.dataset.recipientId);
+                const recipient = session.searchResults?.find(item => item.recipient_id === button.dataset.recipientId);
                 if (!recipient) return;
-                setRecipient(session.review, recipient, true, { mentionId: mention?.mention_id });
-                if (mention) setDecision(session.review, { mention_id: mention.mention_id, action: 'resolve', recipient_ids: [...(session.review.decisions.get(mention.mention_id)?.recipient_ids || []), recipient.recipient_id] });
+                setRecipient(session.review, recipient, true);
             }
             invalidate(session); renderDetail(); return;
         }
@@ -298,15 +304,19 @@ export const createDashboard = () => {
             if (input.dataset.assignment) {
                 const fields = [...sidebar.querySelectorAll('input[data-assignment]')].filter(item => item.dataset.recipientId === input.dataset.recipientId && item.checked).map(item => item.dataset.assignment);
                 assignRecipient(session.review, input.dataset.recipientId, fields);
-            } else if (input.dataset.globalReason) {
-                setDecision(session.review, { mention_id: `reason:${input.dataset.globalReason}`, action: 'accept_missing', note: input.value, recipient_ids: [] });
+            } else if (input.dataset.decisionRecipients) {
+                const mention = session.review.result.unresolved.find(item => item.mention_id === input.dataset.decisionRecipients);
+                const recipient = session.review.recipients.get(input.value) || mention?.candidates?.find(item => item.recipient_id === input.value);
+                if (!mention || !recipient) return;
+                setDecisionRecipient(session.review, mention.mention_id, recipient, input.checked);
             } else {
-                const id = input.dataset.decisionAction || input.dataset.decisionNote || input.dataset.decisionRecipients;
+                const id = input.dataset.decisionAction || input.dataset.decisionNote;
                 if (!id) return;
-                const all = [...detail.querySelectorAll('[data-decision-action],[data-decision-note],[data-decision-recipients]')];
+                const all = [...detail.querySelectorAll('[data-decision-action],[data-decision-note]')];
                 const find = attribute => all.find(node => node.dataset[attribute] === id);
                 const action = find('decisionAction').value;
-                setDecision(session.review, { mention_id: id, action, note: find('decisionNote').value, recipient_ids: action === 'resolve' ? [...find('decisionRecipients').selectedOptions].map(option => option.value) : [] });
+                const ids = [...detail.querySelectorAll('input[data-decision-recipients]')].filter(node => node.dataset.decisionRecipients === id && node.checked).map(node => node.value);
+                setDecision(session.review, { mention_id: id, action, note: find('decisionNote').value, recipient_ids: action === 'resolve' ? ids : [] });
             }
             invalidate(session);
         }
