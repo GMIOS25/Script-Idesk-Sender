@@ -110,10 +110,9 @@ try {
     await mention.click();
     const mentionScroll = await top(detail);
     assert.equal(await query.inputValue(), manual.name);
-    assert.equal(await query.evaluate(node => node === document.activeElement), true);
-    await query.press('Enter');
-    assert.equal(await page.locator('.sender-search').getAttribute('aria-busy'), 'true');
+    assert.equal(await page.locator('.sender-search').getAttribute('aria-busy'), 'true', 'Tra danh bạ starts searching without another submit');
     await page.waitForFunction(() => document.querySelector('.sender-search')?.getAttribute('aria-busy') === 'false');
+    assert.equal(await query.evaluate(node => node === document.activeElement), true);
     near(await top(detail), mentionScroll, 'Search leaves current evidence in place');
     assert.equal(await query.inputValue(), manual.name);
     assert.equal(await page.locator('.sender-added').count(), 1);

@@ -228,6 +228,7 @@ export const createDashboard = () => {
             const query = sidebar.querySelector('input[type="search"]');
             query.focus({ preventScroll: true });
             query.select();
+            query.form.requestSubmit();
             return;
         }
         if (action === 'remove-recipient' || action === 'candidate' || action === 'search-add') {
