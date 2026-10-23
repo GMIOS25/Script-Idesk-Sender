@@ -4,6 +4,8 @@ Userscript chuyên biệt cho tác vụ **Văn bản đi → Ban hành văn bả
 
 Kho mã nguồn này hoạt động hoàn toàn độc lập, chỉ phục vụ luồng nghiệp vụ Ban hành văn bản.
 
+> 📖 **Xem sổ tay hướng dẫn toàn diện từ A-Z**: [GUIDE.md](../ai-document-sender/GUIDE.md)
+
 ## Cài đặt và Chạy
 
 ### 1. Khởi động Backend (`ai-document-sender`)
