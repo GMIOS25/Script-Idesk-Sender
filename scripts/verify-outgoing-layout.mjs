@@ -7,7 +7,6 @@ import { fileURLToPath } from 'node:url';
 import * as esbuild from 'esbuild';
 
 const require = createRequire(import.meta.url);
-const { chromium } = require(process.env.PLAYWRIGHT_MODULE_PATH || 'playwright');
 const root = fileURLToPath(new URL('../', import.meta.url));
 const output = new URL('../dist/layout-verification/', import.meta.url);
 await mkdir(output, { recursive: true });
@@ -36,12 +35,14 @@ export const downloadPDF = async () => new Blob(['%PDF-test']);
 export const primeDirectories = async () => {};
 export const getTenantId = () => 'test';
 export const fetchLookupPayload = async () => null;
+export const searchOrganizations = async () => ({ elements: [], warnings: [] });
 export const scanDocuments = async () => documents.size;`;
 const clientFixture = `
 export const documentMetadata = (doc, attachment) => ({ document_id: doc.id, attachment_content_uid: attachment.contentUid });
 export const createSenderClient = () => ({
     health: async () => ({}),
     checkVersions: async () => {},
+    resolveJob: async () => { throw new Error('Danh bạ đã thay đổi; kiểm tra lại kết quả.'); },
     feedback: async (jobId, body) => { window.reviewFeedback = body; return { feedback_id: 'verified-feedback' }; },
     analyze: async () => ({ jobId: 'job-1', metadata: { document_id: '339', attachment_content_uid: 'pdf-339' }, result: ${JSON.stringify(result)} }),
     searchRecipients: async query => {
@@ -60,6 +61,11 @@ const bundle = await esbuild.build({
 });
 const html = `<!doctype html><html lang="vi"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kiểm tra giao diện ban hành văn bản · dữ liệu mẫu</title><style>/* Simulate the native skin hiding inputs in favor of .lbl. */ input[type=checkbox] { opacity: 0 !important; position: absolute !important; appearance: none !important; }</style><body style="margin:0;background:#e8eef2"><script>${bundle.outputFiles[0].text.replaceAll('</script', '<\\/script')}</script></body></html>`;
 await writeFile(new URL('preview.html', output), html);
+if (process.argv.includes('--prepare-only')) {
+    console.log('Prepared ' + fileURLToPath(new URL('preview.html', output)));
+    process.exit(0);
+}
+const { chromium } = require(process.env.PLAYWRIGHT_MODULE_PATH || 'playwright');
 const browser = await chromium.launch({ headless: true, ...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE } : { channel: 'chrome' }) });
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
 const errors = [];

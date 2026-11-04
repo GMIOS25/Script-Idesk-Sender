@@ -53,6 +53,33 @@ async function clientFor(backend, options = {}) {
     return createSenderClient({ request: backend.request, pollIntervalMs: 0, timeoutMs: 1000, ...options });
 }
 
+test('imports live observations and polls a fresh resolution without uploading another PDF', async () => {
+    const fresh = { ...result(), job_id: 'resolution-2', registry_version: 'registry-new' };
+    const backend = server({
+        '/v1/sync/organizations': options => {
+            assert.deepEqual(JSON.parse(options.data), { source: 'search', elements: [{ code: 'H21.20', name: 'Thanh tra tỉnh Gia Lai', sphere: 'int_province_comm' }] });
+            return { body: { status: 'synced', tenant_id: 'vpub', registry_version: 'registry-new', alias_policy_version: snapshot.alias_policy_version } };
+        },
+        '/v1/outgoing/jobs/job-1/resolutions': () => ({ status: 202, body: { job_id: 'resolution-2', status: 'queued' } }),
+        '/v1/outgoing/jobs/resolution-2': () => ({ body: { job_id: 'resolution-2', status: 'completed', result: fresh } })
+    });
+    const client = await clientFor(backend);
+    await client.syncOrganizations([{ code: 'H21.20', name: 'Thanh tra tỉnh Gia Lai', sphere: 'int_province_comm' }], 'search');
+    const resolved = await client.resolveJob('job-1', result());
+    assert.equal(resolved.jobId, 'resolution-2');
+    assert.equal(resolved.result.registry_version, 'registry-new');
+    assert.ok(backend.calls.every(call => !(call.data instanceof FormData)));
+});
+
+test('rejects a fresh resolution that changes the document or input hash', async () => {
+    const backend = server({
+        '/v1/outgoing/jobs/job-1/resolutions': () => ({ status: 202, body: { job_id: 'resolution-2', status: 'queued' } }),
+        '/v1/outgoing/jobs/resolution-2': () => ({ body: { job_id: 'resolution-2', status: 'completed', result: { ...result(), job_id: 'resolution-2', document_id: 'other' } } })
+    });
+    const client = await clientFor(backend);
+    await assert.rejects(client.resolveJob('job-1', result()), { code: 'invalid_result' });
+});
+
 test('maps outgoing document metadata without submitting legacy department filters or extra fields', async () => {
     await assert.doesNotReject(async () => {
         const { documentMetadata } = await import('../src/outgoing/provider.js');

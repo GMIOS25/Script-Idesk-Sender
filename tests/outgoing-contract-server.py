@@ -50,7 +50,8 @@ def main():
         pdf = canvas.Canvas(str(pdf_path), pagesize=(595, 842))
         pdf.setFont("ContractUnicode", 11)
         for y, text in ((770, "Tài liệu tổng hợp dùng kiểm thử tích hợp."), (250, "Nơi nhận:"),
-                        (230, "- Chủ tịch UBND tỉnh;"), (210, "- Lưu: VT, V5.")):
+                        (230, "- Chủ tịch UBND tỉnh;"), (210, "- Thanh tra tỉnh;"),
+                        (190, "- Sở Ngoại vụ;"), (170, "- Lưu: VT, V5.")):
             pdf.drawString(40, y, text)
         pdf.save()
 

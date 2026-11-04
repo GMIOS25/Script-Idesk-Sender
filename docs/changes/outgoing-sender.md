@@ -1,5 +1,13 @@
 # Ban hành văn bản iDesk · AI Sender
 
+## 1.4.0 — 2026-11-04
+
+- Bổ sung danh bạ đơn vị theo cấp/loại bên cạnh lịch sử gửi; giữ dữ liệu đã tìm được qua các lần đồng bộ.
+- Tìm trực tiếp iDesk khi phân tích thiếu đơn vị hoặc tra cứu cục bộ không có kết quả. Có nút tìm trực tiếp để bổ sung ngoài các ứng viên hiện có.
+- Đối chiếu lại danh bạ từ phần trích xuất đã lưu, tạo snapshot mới và yêu cầu rà soát lại. Không upload PDF hoặc OCR lại.
+- Khi tải lại trang, xác thực đơn vị bổ sung bằng mã và phạm vi trước khi điền vào form. Giữ kiểm chứng chip và thao tác gửi chính thức của iDesk.
+- Cập nhật backend cùng userscript. Job cũ chưa có tenant cần phân tích/upload lại một lần để lưu rà soát hoặc đối chiếu trên snapshot mới; vẫn đọc được kết quả cũ.
+
 ## 1.3.0 — 2026-10-20
 
 - Cảnh báo cần đối chiếu chỉ hiển thị để tham khảo, không yêu cầu ghi chú hoặc xác nhận từng cảnh báo trước khi điền/lưu kết quả. Cập nhật backend cùng userscript để áp dụng cả phía API.

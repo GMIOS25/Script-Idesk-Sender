@@ -1,4 +1,4 @@
-import { documents, context, scanDocuments, ensureDocumentDetails, showDocument, isDocumentEligible, chooseAttachment, downloadPDF, primeDirectories, getTenantId, fetchLookupPayload } from './idesk.js';
+import { documents, context, scanDocuments, ensureDocumentDetails, showDocument, isDocumentEligible, chooseAttachment, downloadPDF, primeDirectories, getTenantId, fetchLookupPayload, searchOrganizations } from './idesk.js';
 import { createSenderClient, documentMetadata } from './provider.js';
 import { createReview, assignRecipient, setRecipient, setDecision, setDecisionRecipient, buildFeedback } from './review.js';
 import { prepareOutgoingForm, FIELD_DEFINITIONS } from './form.js';
@@ -7,6 +7,64 @@ import { styles } from './styles.js';
 import { makePanelDraggable } from './drag.js';
 
 const invalidate = session => { session.reviewed = false; session.feedbackId = ''; session.applied = null; session.error = ''; };
+
+export const refreshResolution = async (session, onStatus = () => {}) => {
+    invalidate(session);
+    const response = await session.client.resolveJob(session.jobId, session.review.result, { onStatus });
+    session.jobId = response.jobId;
+    session.review = createReview(response.result);
+    session.searchResults = null;
+    session.existingSummary = '';
+    session.directoryWarning = 'Danh bạ đã được đối chiếu lại; kiểm tra danh sách và chọn lại các trường người nhận.';
+    return response;
+};
+
+const supplementOrganizations = async (session, queries, { search = searchOrganizations, onStatus = () => {} } = {}) => {
+    const found = new Map(), warnings = [];
+    const unique = [...new Set(queries.filter(q => typeof q === 'string' && q.trim().length >= 2 && q.length <= 256))];
+    if (!unique.length) return { found: 0, failed: false };
+    const deadline = Date.now() + 30000;
+    for (const query of unique.slice(0, 10)) {
+        if (Date.now() >= deadline) { warnings.push('Chưa tra hết đơn vị; có thể tra trực tiếp từng tên.'); break; }
+        onStatus(`Đang tìm đơn vị trên iDesk: ${query}`);
+        try {
+            const result = await search(query);
+            for (const node of result.elements) found.set(`${node.sphere}:${node.code}`, node);
+            warnings.push(...result.warnings);
+        } catch (error) { warnings.push(`Tra cứu iDesk chưa thành công: ${error.message}`); break; }
+    }
+    if (unique.length > 10) warnings.push('Còn đơn vị chưa tra; có thể tra trực tiếp từng tên.');
+    if (found.size) {
+        // Import proves existence only. The backend resolver decides correspondence.
+        const imported = await session.client.syncOrganizations([...found.values()], 'search');
+        const old = session.review.result;
+        if (old.registry_version !== imported.registry_version || old.alias_policy_version !== imported.alias_policy_version) {
+            await refreshResolution(session, onStatus);
+            warnings.push('Danh bạ đã cập nhật và đối chiếu lại; cần rà soát danh sách mới.');
+        }
+    }
+    session.directoryWarning = warnings.join(' ');
+    return { found: found.size, failed: warnings.some(w => w.startsWith('Tra cứu iDesk chưa thành công')) };
+};
+
+export const enrichUnresolvedOrganizations = async (session, options = {}) => {
+    const queries = session.review.result.unresolved.filter(item => ['unit', 'organization'].includes(item.kind)).map(item => item.raw);
+    try { return await supplementOrganizations(session, queries, options); }
+    catch (error) { session.directoryWarning = `Chưa cập nhật được danh bạ: ${error.message}`; return { found: 0, failed: true }; }
+};
+
+export const searchSessionRecipients = async (session, query, options = {}) => {
+    let body = await session.client.searchRecipients(query);
+    const stale = () => body.registry_version !== session.review.result.registry_version || body.alias_policy_version !== session.review.result.alias_policy_version;
+    if (stale()) { await refreshResolution(session, options.onStatus); body = await session.client.searchRecipients(query); }
+    if (!body.items.length || options.forceLive) {
+        const supplemented = await supplementOrganizations(session, [query], options);
+        if (supplemented.failed) throw new Error(session.directoryWarning);
+        body = await session.client.searchRecipients(query);
+    }
+    if (stale()) throw new Error('Danh bạ đang thay đổi; bấm Đối chiếu lại danh bạ rồi thử lại.');
+    return body;
+};
 
 export const refreshSessionDocument = (session, doc) => {
     session.doc = doc;
@@ -50,6 +108,7 @@ export const createDashboard = () => {
     let selectedId = '';
     let busy = false;
     let stopped = false;
+    let lookupSync = null;
     const launcher = document.createElement('button');
     launcher.id = 'sender-launcher';
     launcher.type = 'button';
@@ -143,6 +202,7 @@ export const createDashboard = () => {
             const doc = await ensureDocumentDetails(id);
             session = sessionFor(doc);
             if (!session.attachment) throw new Error('Văn bản không có tài liệu chính để phân tích.');
+            await triggerBackgroundSync();
             const client = createSenderClient(settings);
             const metadata = documentMetadata(doc, session.attachment);
             const file = await downloadPDF(session.attachment);
@@ -165,6 +225,7 @@ export const createDashboard = () => {
             session.metadata = response.metadata;
             session.jobId = response.jobId;
             session.review = createReview(response.result);
+            await enrichUnresolvedOrganizations(session, { onStatus: status });
             session.failed = false;
             status(`Đã phân tích ${doc.signNumber || id}; hãy đối chiếu người nhận và chọn trường cần điền.`);
         } catch (error) {
@@ -192,7 +253,7 @@ export const createDashboard = () => {
             invalidate(session);
             throw new Error('Thông tin văn bản hoặc tài liệu chính đã thay đổi; cần phân tích lại.');
         }
-        await primeDirectories();
+        await primeDirectories([...session.review.recipients.values()]);
         await session.client.checkVersions(session.review.result);
         const result = await prepareOutgoingForm({ doc, recipients: [...session.review.recipients.values()], assignments: session.review.assignments, replaceExisting: session.replaceExisting, onStatus: status });
         session.applied = result.applied;
@@ -307,6 +368,11 @@ export const createDashboard = () => {
                     try { await analyze(id); completed++; } catch (error) { status(`Bỏ qua ${id}: ${error.message}`); }
                 }
                 status(`Đã phân tích ${completed}/${ids.length} văn bản${skippedCount ? ` (bỏ qua ${skippedCount} đã lưu)` : ''}${stopped ? '; đã dừng theo yêu cầu' : ''}.`);
+            } else if (action === 'resolve') {
+                const session = current();
+                await refreshResolution(session, status);
+                await enrichUnresolvedOrganizations(session, { onStatus: status });
+                status('Đã đối chiếu lại danh bạ; kiểm tra danh sách và chọn lại các trường người nhận.');
             } else if (action === 'apply') await apply();
             else if (action === 'feedback') {
                 const session = current();
@@ -364,6 +430,7 @@ export const createDashboard = () => {
         const query = event.target.elements.query.value.trim();
         if (busy || !session?.review || !query) return;
         session.searchQuery = query;
+        const forceLive = event.submitter?.value === 'idesk';
         session.searchResults = null;
         session.searchError = '';
         session.error = '';
@@ -371,33 +438,36 @@ export const createDashboard = () => {
         renderDetail();
         void run(async () => {
             try {
-                const body = await session.client.searchRecipients(query);
-                if (body.registry_version !== session.review.result.registry_version || body.alias_policy_version !== session.review.result.alias_policy_version) throw new Error('Danh bạ đã thay đổi; phân tích lại trước khi thêm người nhận.');
+                const body = await searchSessionRecipients(session, query, { forceLive, onStatus: status });
                 session.searchResults = body.items;
                 status(`Tìm thấy ${body.items.length} ứng viên. Chọn đúng định danh để thêm.`);
             } catch (error) { session.searchError = error.message; throw error; }
             finally { session.searching = false; }
         }).then(() => sidebar.querySelector('input[type="search"]')?.focus({ preventScroll: true }));
     });
-    const triggerBackgroundSync = async () => {
-        try {
+    const triggerBackgroundSync = () => {
+        if (lookupSync) return lookupSync;
+        lookupSync = (async () => { try {
             const tenantId = getTenantId();
             const today = new Date().toISOString().slice(0, 10);
-            const syncKey = `outgoing-sender:last-sync:${tenantId}`;
+            const syncKey = `outgoing-sender:last-directory-sync:v2:${tenantId}`;
             const lastSync = typeof GM_getValue === 'function' ? GM_getValue(syncKey, '') : '';
             if (lastSync === today) return;
 
-            const payload = await fetchLookupPayload();
+            let warning = '';
+            const payload = await fetchLookupPayload({ onWarning: value => { warning = value; } });
             if (!payload) return;
 
             const client = createSenderClient(settings);
             const res = await client.syncLookup(payload);
             if (res && ['synced', 'no_change'].includes(res.status)) {
-                if (typeof GM_setValue === 'function') GM_setValue(syncKey, today);
+                if (warning) { if (current()) current().directoryWarning = warning; status(warning); }
+                else if (typeof GM_setValue === 'function') GM_setValue(syncKey, today);
             }
-        } catch {
-            // Background sync is silent and non-blocking
-        }
+        } catch (error) {
+            if (current()) current().directoryWarning = `Chưa đồng bộ được danh bạ: ${error.message}`;
+        } })().finally(() => { lookupSync = null; if (!busy) renderDetail(); });
+        return lookupSync;
     };
 
     launcher.addEventListener('click', () => {

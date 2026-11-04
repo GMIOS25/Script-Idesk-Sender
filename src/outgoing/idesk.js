@@ -15,7 +15,8 @@ const ENDPOINTS = {
     list: '/document/edocs/qspublishing.cpx',
     view: '/document/edocs/view.cpx',
     internal: '/comm/nodes/fbyvsphere.cpx',
-    organization: '/history/organext/list.cpx'
+    organization: '/history/organext/list.cpx',
+    organizationSearch: '/idkmoni/organs/fbysphere.cpx'
 };
 const installedRealms = new WeakSet();
 const nativeViews = new WeakMap();
@@ -309,12 +310,14 @@ export const ingestResponse = (input, data, body) => {
         doc.detailsLoaded = true;
     } else if (target.endpoint === 'internal' && Array.isArray(data.elements)) {
         data.elements.forEach(node => { if (node?.id != null) internalDirectory.set(String(node.id), node); });
-    } else if (target.endpoint === 'organization' && Array.isArray(data.elements)) {
-        const sphere = target.url.searchParams.get('sphere');
+    } else if (['organization', 'organizationSearch'].includes(target.endpoint) && Array.isArray(data.elements)) {
+        const sphere = target.url.searchParams.get('sphere') || new URLSearchParams(body).get('sphere');
         if (!SPHERES.includes(sphere)) return false;
         data.elements.forEach(node => {
             if (node?.code && (!node.sphere || node.sphere === sphere)) {
-                organizationDirectory.set(`${sphere}:${node.code}`, { ...node, sphere });
+                const key = `${sphere}:${node.code}`;
+                if (target.endpoint === 'organization' && organizationDirectory.get(key)?.directorySource === 'directory') return;
+                organizationDirectory.set(key, { ...node, sphere, directorySource: target.endpoint === 'organization' ? 'history' : 'directory' });
             }
         });
     } else return false;
@@ -322,9 +325,9 @@ export const ingestResponse = (input, data, body) => {
     return true;
 };
 
-const fetchJson = async (url, init = {}) => {
+const fetchJson = async (url, init = {}, timeoutMs = 60000) => {
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 60000);
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
     const page = pageWindow();
     const start = page.performance?.now?.();
     const read = nativeTarget(url)?.endpoint === 'view' && Number.isFinite(start)
@@ -343,6 +346,74 @@ const fetchJson = async (url, init = {}) => {
         if (read) read.end = page.performance.now();
         clearTimeout(timer);
     }
+};
+
+const organizationElements = (data, sphere) => {
+    if (!Array.isArray(data?.elements)) throw new Error('Dữ liệu danh bạ iDesk không hợp lệ; kiểm tra phiên đăng nhập.');
+    return data.elements.map(node => {
+        if (!node || typeof node.code !== 'string' || !node.code.trim() || node.code.length > 128 ||
+            typeof node.name !== 'string' || !node.name.trim() || node.name.length > 1024) throw new Error('Dữ liệu đơn vị iDesk không hợp lệ.');
+        if (node.sphere && node.sphere !== sphere) throw new Error('Đơn vị iDesk trả về sai phạm vi sphere.');
+        return { ...node, code: node.code.trim(), name: node.name.trim(), sphere };
+    });
+};
+
+const isTruncated = (data, count) => Boolean(data?.hasMore || data?.nextPageToken ||
+    (Number.isFinite(data?.total) && data.total > count) || count >= 1000);
+
+export const searchOrganizations = async (keyword, spheres = SPHERES) => {
+    if (typeof keyword !== 'string' || keyword.trim().length < 2 || keyword.length > 256 ||
+        !spheres.length || spheres.some(sphere => !SPHERES.includes(sphere))) throw new Error('Từ khóa hoặc phạm vi tra cứu không hợp lệ.');
+    const elements = [], warnings = [];
+    // Two bounded requests at most; failures remain failures, never negative cache entries.
+    for (const sphere of new Set(spheres)) {
+        const url = `${basePath()}${ENDPOINTS.organizationSearch}?${new URLSearchParams({ sphere, keyword: keyword.trim() })}`;
+        const data = await fetchJson(url, {}, 15000);
+        const nodes = organizationElements(data, sphere);
+        if (isTruncated(data, nodes.length)) warnings.push(`Kết quả ${sphere} có thể bị giới hạn; cần thu hẹp từ khóa.`);
+        elements.push(...nodes);
+    }
+    for (const sphere of new Set(spheres)) ingestResponse(`${basePath()}${ENDPOINTS.organizationSearch}?sphere=${sphere}`, { elements: elements.filter(n => n.sphere === sphere) });
+    return { elements, warnings };
+};
+
+export const fetchOrganizationCatalog = async () => {
+    const elements = new Map(), warnings = [], groups = new Map();
+    const deadline = Date.now() + 90000;
+    for (const sphere of SPHERES) for (const type of ['rank', 'type']) {
+        try {
+            const data = await fetchJson(`${basePath()}/admin/extorgancategory/list.cpx`, {
+                method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+                body: new URLSearchParams({ sphere, type }).toString()
+            }, 10000);
+            if (!Array.isArray(data?.items)) throw new Error('invalid categories');
+            if (isTruncated(data, data.items.length)) warnings.push(`Danh mục ${sphere}/${type} chưa đầy đủ.`);
+            for (const category of data.items) {
+                if (typeof category?.uuid !== 'string' || !category.uuid) throw new Error('invalid category');
+                groups.set(`${sphere}:${category.uuid}`, { sphere, cateId: category.uuid });
+            }
+        } catch { warnings.push(`Chưa tải được danh mục ${sphere}/${type}; sẽ tra trực tiếp khi cần.`); }
+    }
+    const selected = [...groups.values()].slice(0, 64);
+    if (groups.size > selected.length) warnings.push('Danh mục vượt giới hạn đồng bộ; sẽ tra trực tiếp khi cần.');
+    const configured = pageWindow().iNet?.systemConfig?.allow_center_code_list;
+    for (let start = 0; start < selected.length; start += 4) {
+        if (Date.now() >= deadline) { warnings.push('Hết thời gian đồng bộ danh bạ; sẽ tra trực tiếp khi cần.'); break; }
+        await Promise.all(selected.slice(start, start + 4).map(async group => {
+            try {
+                const params = { ...group };
+                if (group.sphere === 'int_province_comm' && configured) params.centerCode = configured === true || configured === 'true' ? '00.00.W19' : configured;
+                const url = `${basePath()}${ENDPOINTS.organizationSearch}?${new URLSearchParams(params)}`;
+                const data = await fetchJson(url, {}, 10000);
+                const nodes = organizationElements(data, group.sphere);
+                if (isTruncated(data, nodes.length)) warnings.push(`Nhóm ${group.sphere}/${group.cateId} chưa đầy đủ do giới hạn kết quả.`);
+                for (const node of nodes) elements.set(`${node.sphere}:${node.code}`, node);
+                ingestResponse(url, { elements: nodes });
+            } catch { warnings.push(`Chưa tải được nhóm ${group.sphere}/${group.cateId}; sẽ tra trực tiếp khi cần.`); }
+        }));
+    }
+    // Category lists do not prove every descendant or unclassified unit is covered.
+    return { elements: [...elements.values()], coverage: 'category_lists', warnings: [...new Set(warnings)] };
 };
 
 const loadDocumentDetails = async key => {
@@ -373,7 +444,7 @@ export const ensureDocumentDetails = async (id, { refresh = false } = {}) => {
 export const chooseAttachment = doc => selectAttachment(doc.selectionMarker === 'book'
     ? { ...doc, attachments: getNumberMatchedAttachments(doc) } : doc, true);
 
-export const primeDirectories = async () => {
+export const primeDirectories = async (recipients = []) => {
     if (!recoverExecutor()) throw new Error('Chưa xác định được người đang xử lý để tải danh bạ iDesk');
     const actor = context.execAcode;
     const requests = [
@@ -385,10 +456,18 @@ export const primeDirectories = async () => {
         ...SPHERES.map(sphere => [`${basePath()}${ENDPOINTS.organization}?${new URLSearchParams({ sphere, exeacode: actor })}`, {}])
     ];
     await Promise.all(requests.map(async ([url, init]) => ingestResponse(url, await fetchJson(url, init), init.body)));
+    // A daily backend sync may have happened on a previous page load. Prove
+    // missing native identities again before the form can select their chips.
+    for (const recipient of recipients.filter(item => SPHERES.includes(item.sphere))) {
+        const key = `${recipient.sphere}:${recipient.code}`;
+        if (organizationDirectory.has(key)) continue;
+        await searchOrganizations(recipient.code, [recipient.sphere]);
+        if (!organizationDirectory.has(key)) throw new Error(`Không xác thực được mã đơn vị ${recipient.code} trên iDesk.`);
+    }
     return { internal: internalDirectory.size, organizations: organizationDirectory.size };
 };
 
-export const fetchLookupPayload = async () => {
+export const fetchLookupPayload = async ({ onWarning = () => {} } = {}) => {
     if (!recoverExecutor()) return null;
     const actor = context.execAcode;
     const [person, unit_internal, unit_external] = await Promise.all([
@@ -400,7 +479,10 @@ export const fetchLookupPayload = async () => {
         fetchJson(`${basePath()}${ENDPOINTS.organization}?${new URLSearchParams({ sphere: 'int_province_comm', exeacode: actor })}`),
         fetchJson(`${basePath()}${ENDPOINTS.organization}?${new URLSearchParams({ sphere: 'ext_province_comm', exeacode: actor })}`)
     ]);
-    return { person, unit_internal, unit_external };
+    if (![person, unit_internal, unit_external].every(data => Array.isArray(data?.elements))) throw new Error('Dữ liệu đồng bộ iDesk không hợp lệ; kiểm tra phiên đăng nhập.');
+    const catalog = await fetchOrganizationCatalog();
+    if (catalog.warnings.length) onWarning(catalog.warnings.join(' '));
+    return { person, unit_internal, unit_external, unit_directory: { elements: catalog.elements } };
 };
 
 export const downloadPDF = attachment => new Promise((resolve, reject) => {

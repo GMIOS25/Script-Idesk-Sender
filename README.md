@@ -45,6 +45,16 @@ Lệnh build sẽ sinh ra tệp `dist/idesk_outgoing.user.js`.
 4. **Rà soát & Điều chỉnh**: Kiểm tra người nhận nội bộ, đơn vị trong tỉnh, đơn vị ngoài tỉnh, gán vai trò (Xử lý văn bản đi, Chuyển để biết, Phối hợp xử lý, Theo dõi).
 5. **Điền vào form iDesk**: Tự động điền danh sách người nhận vào đúng các trường native của form ban hành iDesk.
 
+### Danh bạ đơn vị bổ sung (userscript 1.4.0)
+
+Lần đầu mỗi ngày, script hợp nhất lịch sử gửi với danh bạ **Đơn vị theo cấp / Đơn vị theo loại**, đọc ID nhóm và cấu hình trung tâm từ phiên iDesk hiện tại. Đồng bộ có giới hạn 64 nhóm, tối đa 4 truy vấn nhóm đồng thời; nhóm lỗi hoặc kết quả bị giới hạn được báo để tra bổ sung. Danh mục nhóm không chứng minh đã bao phủ toàn bộ đơn vị con hoặc đơn vị chưa phân loại.
+
+Khi phân tích còn đơn vị chưa tìm thấy, script tra trực tiếp iDesk (tối đa 10 tên mỗi văn bản), gửi các định danh tìm được về backend và đối chiếu lại trên phần trích xuất đã lưu. Không gửi lại PDF và không OCR lại. Tra cứu thủ công cũng tự tra iDesk khi danh bạ cục bộ rỗng; dùng **Tìm đơn vị trực tiếp trên iDesk** khi cần tìm ngoài các ứng viên đã có. Kết quả là ứng viên, cần chọn đúng định danh.
+
+Nút **Đối chiếu lại danh bạ** tạo snapshot mới. Các quyết định, trường người nhận và xác nhận rà soát được đặt lại để kiểm tra kết quả mới. Nếu phiên iDesk hết hạn hoặc backend lỗi, giao diện báo tra cứu chưa thành công, không coi đó là đơn vị không tồn tại. Cookie iDesk chỉ nằm trong trình duyệt.
+
+Cập nhật userscript và khởi động lại backend cùng phiên bản. Job được tạo trước khi backend ghi nhận tenant vẫn đọc được để đối chiếu; cần phân tích/upload lại một lần nếu muốn lưu rà soát hoặc tạo resolution mới cho các job cũ này.
+
 ## Kiểm thử & Xác thực
 
 ```powershell

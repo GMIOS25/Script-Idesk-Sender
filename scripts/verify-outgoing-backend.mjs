@@ -115,12 +115,34 @@ async function main() {
         await client.checkVersions(analyzed.result);
     }
 
+    // Directory import and checkpoint-only resolution use the real HTTP boundary.
+    const observed = [
+        { code: 'H21.20', name: 'Thanh tra tỉnh Gia Lai', uuid: 'directory-inspectorate', sphere: 'int_province_comm' },
+        { code: 'H21.26', name: 'Sở Ngoại vụ - tỉnh Gia Lai', uuid: 'directory-foreign-affairs', sphere: 'int_province_comm' }
+    ];
+    const imported = await client.syncOrganizations(observed, 'directory');
+    assert.notEqual(imported.registry_version, analyzed.result.registry_version);
+    assert.ok((await client.searchRecipients('Sở Ngoại vụ')).items.some(item => item.code === 'H21.26'));
+    await assert.rejects(client.checkVersions(analyzed.result), { code: 'stale_snapshot' });
+    const resolved = await client.resolveJob(analyzed.jobId, analyzed.result);
+    assert.notEqual(resolved.jobId, analyzed.jobId);
+    assert.equal(resolved.result.input_sha256, analyzed.result.input_sha256);
+    assert.equal(resolved.result.extraction_status, analyzed.result.extraction_status);
+    assert.deepEqual(resolved.result.mentions, analyzed.result.mentions);
+    assert.ok(resolved.result.units.some(item => item.code === 'H21.20'));
+    assert.ok(resolved.result.units.some(item => item.code === 'H21.26'));
+    assert.equal((await client.resolveJob(analyzed.jobId, analyzed.result)).jobId, resolved.jobId);
+    assert.deepEqual((await client.getJob(analyzed.jobId)).result, analyzed.result);
+    const repeatedImport = await client.syncOrganizations(observed, 'directory');
+    assert.equal(repeatedImport.registry_version, imported.registry_version);
+
     console.log(JSON.stringify({ verified: true, transport: 'real Node fetch + FormData → GM adapter → FastAPI',
         base_url: baseUrl, server_pid: server?.pid || null, pdf_path: fixture.pdf_path,
         fixture_root: fixture.fixture_root, job_id: analyzed.jobId,
         recipients: analyzed.result.people.map(recipient => recipient.recipient_id), feedback_id: feedback.feedback_id,
         checks: ['health/offline', 'real PDF extraction', 'same-intent replay', 'metadata conflict 409',
-            'recipient search', 'review feedback 201/422', 'registry guard', 'policy guard'], keep_server: keepServer || connectOnly }, null, 2));
+            'recipient search', 'review feedback 201/422', 'registry guard', 'policy guard',
+            'directory import', 'checkpoint-only resolution', 'resolution retry', 'immutable original result'], keep_server: keepServer || connectOnly }, null, 2));
     if (keepServer && server) {
         console.log('Fixture server remains available on port 8052. Stop this process with Ctrl+C after browser verification.');
         await once(server, 'exit');

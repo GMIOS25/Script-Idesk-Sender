@@ -164,6 +164,23 @@ export function createSenderClient({ baseUrl = 'http://127.0.0.1:8000', apiKey =
         return job;
     }
 
+    async function pollJob(created, deadline, onStatus) {
+        if (typeof created.job_id !== 'string' || !created.job_id || !JOB_STATUSES.includes(created.status)) throw senderError('invalid_result', 'Backend không trả mã job hợp lệ.');
+        let previousStatus;
+        const status = next => { if (next !== previousStatus) onStatus(next); previousStatus = next; };
+        status(created.status);
+        while (true) {
+            remaining(deadline);
+            const job = await getJob(created.job_id, deadline);
+            status(job.status);
+            if (job.status === 'failed') throw Object.assign(
+                senderError(job.error.code, job.error.message || 'Không phân tích được văn bản.', 0, Boolean(job.error.retryable)),
+                { jobFailed: true, jobId: created.job_id });
+            if (job.status === 'completed') return job;
+            await pause(pollIntervalMs, deadline);
+        }
+    }
+
     async function analyze({ file, metadata, retryNonce = '', onStatus = () => {} }) {
         const deadline = Date.now() + timeoutMs;
         metadata = validateMetadata(metadata);
@@ -182,28 +199,29 @@ export function createSenderClient({ baseUrl = 'http://127.0.0.1:8000', apiKey =
         form.append('file', file, file.name || metadata.attachment_name || 'document.pdf');
         form.append('metadata', JSON.stringify(metadata));
         const created = await call('POST', '/v1/outgoing/jobs', { data: form, headers: { 'Idempotency-Key': key }, deadline });
-        if (typeof created.job_id !== 'string' || !created.job_id || !JOB_STATUSES.includes(created.status)) {
-            throw senderError('invalid_result', 'Backend không trả mã job hợp lệ.');
-        }
-        let previousStatus;
-        const status = next => {
-            if (next !== previousStatus) onStatus(next);
-            previousStatus = next;
-        };
-        status(created.status);
-        while (true) {
-            remaining(deadline);
-            const job = await getJob(created.job_id, deadline);
-            status(job.status);
-            if (job.status === 'failed') throw Object.assign(
-                senderError(job.error.code, job.error.message || 'Không phân tích được văn bản.', 0, Boolean(job.error.retryable)),
-                { jobFailed: true, jobId: created.job_id });
-            if (job.status === 'completed') {
-                validateResult(job.result, created.job_id, metadata, inputSha256);
-                return { jobId: created.job_id, result: job.result, inputSha256, metadata };
-            }
-            await pause(pollIntervalMs, deadline);
-        }
+        const job = await pollJob(created, deadline, onStatus);
+        validateResult(job.result, job.job_id, metadata, inputSha256);
+        return { jobId: job.job_id, result: job.result, inputSha256, metadata };
+    }
+
+    async function resolveJob(jobId, previousResult, { onStatus = () => {} } = {}) {
+        validateResult(previousResult, jobId);
+        const deadline = Date.now() + timeoutMs;
+        const created = await call('POST', '/v1/outgoing/jobs/' + encodeURIComponent(jobId) + '/resolutions', { deadline });
+        const job = await pollJob(created, deadline, onStatus);
+        validateResult(job.result, job.job_id, { document_id: previousResult.document_id }, previousResult.input_sha256);
+        return { jobId: job.job_id, result: job.result };
+    }
+
+    async function syncOrganizations(elements, source = 'search') {
+        if (!Array.isArray(elements) || elements.length > 10000 || !['directory', 'search'].includes(source) || elements.some(node =>
+            !node || typeof node.code !== 'string' || !node.code.trim() || typeof node.name !== 'string' || !node.name.trim() ||
+            !['int_province_comm', 'ext_province_comm'].includes(node.sphere))) throw senderError('invalid_payload', 'Dữ liệu đơn vị bổ sung không hợp lệ.');
+        const body = await call('POST', '/v1/sync/organizations', {
+            data: JSON.stringify({ source, elements }), headers: { 'Content-Type': 'application/json' }
+        });
+        if (!['synced', 'no_change'].includes(body.status) || !hasVersions(body)) throw senderError('invalid_response', 'Backend chưa xác nhận cập nhật danh bạ.');
+        return body;
     }
 
     async function searchRecipients(query) {
@@ -242,5 +260,5 @@ export function createSenderClient({ baseUrl = 'http://127.0.0.1:8000', apiKey =
         });
     }
 
-    return { health, analyze, getJob, searchRecipients, feedback, checkVersions, syncLookup, tenantId: activeTenant };
+    return { health, analyze, getJob, resolveJob, syncOrganizations, searchRecipients, feedback, checkVersions, syncLookup, tenantId: activeTenant };
 }
