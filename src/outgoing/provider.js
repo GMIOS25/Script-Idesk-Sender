@@ -1,5 +1,5 @@
 const METADATA_FIELDS = ['document_id', 'sign_number', 'subject', 'document_date', 'issuer',
-    'department_code', 'attachment_content_uid', 'attachment_name'];
+    'department_code', 'attachment_content_uid', 'attachment_name', 'publication'];
 
 function senderError(code, message, status = 0, retryable = false) {
     return Object.assign(new Error(message), { code, status, retryable });
@@ -10,8 +10,17 @@ function validateMetadata(metadata) {
         || Object.keys(metadata).some(key => !METADATA_FIELDS.includes(key))
         || typeof metadata.document_id !== 'string' || !metadata.document_id.trim()
         || metadata.document_id.length > 256
-        || Object.values(metadata).some(value => value != null && typeof value !== 'string')) {
+        || Object.entries(metadata).some(([key, value]) => key !== 'publication' && value != null && typeof value !== 'string')) {
         throw senderError('invalid_metadata', 'Thông tin văn bản không đúng hợp đồng outgoing.v1.');
+    }
+    const publication = metadata.publication;
+    if (publication != null && (typeof publication !== 'object' || Array.isArray(publication)
+        || Object.keys(publication).some(key => !['mode', 'date', 'external'].includes(key))
+        || !['history', 'confirmed_intent'].includes(publication.mode) || typeof publication.external !== 'boolean'
+        || typeof publication.date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(publication.date)
+        || !Number.isFinite(Date.parse(publication.date))
+        || new Date(publication.date).toISOString().slice(0, 10) !== publication.date)) {
+        throw senderError('invalid_metadata', 'Thông tin ngày hoặc phạm vi phát hành không hợp lệ.');
     }
     if (metadata.document_date != null && (!/^\d{4}-\d{2}-\d{2}$/.test(metadata.document_date)
         || !Number.isFinite(Date.parse(metadata.document_date))
@@ -21,7 +30,7 @@ function validateMetadata(metadata) {
     return Object.fromEntries(Object.entries(metadata).filter(([, value]) => value !== undefined));
 }
 
-export function documentMetadata(doc, attachment) {
+export function documentMetadata(doc, attachment, publication) {
     const metadata = { document_id: doc?.id == null ? '' : String(doc.id) };
     for (const [field, value] of Object.entries({
         sign_number: doc?.signNumber, subject: doc?.subject, issuer: doc?.author,
@@ -29,6 +38,7 @@ export function documentMetadata(doc, attachment) {
     })) {
         if (value != null && value !== '') metadata[field] = String(value);
     }
+    if (publication) metadata.publication = publication;
     if (doc?.docDateStr) {
         const raw = String(doc.docDateStr);
         if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) metadata.document_date = raw;

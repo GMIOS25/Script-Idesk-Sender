@@ -444,7 +444,34 @@ export const ensureDocumentDetails = async (id, { refresh = false } = {}) => {
 export const chooseAttachment = doc => selectAttachment(doc.selectionMarker === 'book'
     ? { ...doc, attachments: getNumberMatchedAttachments(doc) } : doc, true);
 
-export const primeDirectories = async (recipients = []) => {
+export const fetchNativeUnitGroups = async () => {
+    if (!recoverExecutor()) throw new Error('Chưa xác định được phiên danh bạ nhóm.');
+    const sphere = 'int_province_comm';
+    const data = await fetchJson(`${basePath()}/comm/units/fextgroupby.cpx?${new URLSearchParams({ exeacode: context.execAcode })}`, {}, 15000);
+    if (!Array.isArray(data?.elements) || isTruncated(data, data.elements.length)) {
+        throw new Error('Danh mục nhóm iDesk chưa đầy đủ.');
+    }
+    const elements = [], units = new Map();
+    for (const group of data.elements.filter(item => item?.type === 'group')) {
+        if (typeof group.id !== 'string' || !group.id || typeof group.name !== 'string' || !group.name.trim()) continue;
+        const members = Array.isArray(group.units) ? group.units : [];
+        let nodes;
+        try { nodes = organizationElements({ elements: members }, sphere); }
+        catch { nodes = []; }
+        const codes = [...new Set(nodes.map(node => node.code))];
+        const complete = codes.length > 0 && codes.length === members.length && !isTruncated(group, codes.length)
+            && (group.name.trim() !== '135 xã phường' || codes.length === 135);
+        elements.push({ id: group.id, name: group.name.trim(), sphere, member_codes: codes, complete });
+        if (complete) for (const node of nodes) {
+            const key = `${sphere}:${node.code}`;
+            units.set(key, node);
+            organizationDirectory.set(key, { ...node, directorySource: 'directory' });
+        }
+    }
+    return { elements, units: [...units.values()] };
+};
+
+export const primeDirectories = async (recipients = [], { groups = false } = {}) => {
     if (!recoverExecutor()) throw new Error('Chưa xác định được người đang xử lý để tải danh bạ iDesk');
     const actor = context.execAcode;
     const requests = [
@@ -456,6 +483,7 @@ export const primeDirectories = async (recipients = []) => {
         ...SPHERES.map(sphere => [`${basePath()}${ENDPOINTS.organization}?${new URLSearchParams({ sphere, exeacode: actor })}`, {}])
     ];
     await Promise.all(requests.map(async ([url, init]) => ingestResponse(url, await fetchJson(url, init), init.body)));
+    const nativeGroups = groups ? (await fetchNativeUnitGroups()).elements : [];
     // A daily backend sync may have happened on a previous page load. Prove
     // missing native identities again before the form can select their chips.
     for (const recipient of recipients.filter(item => SPHERES.includes(item.sphere))) {
@@ -464,7 +492,7 @@ export const primeDirectories = async (recipients = []) => {
         await searchOrganizations(recipient.code, [recipient.sphere]);
         if (!organizationDirectory.has(key)) throw new Error(`Không xác thực được mã đơn vị ${recipient.code} trên iDesk.`);
     }
-    return { internal: internalDirectory.size, organizations: organizationDirectory.size };
+    return { internal: internalDirectory.size, organizations: organizationDirectory.size, nativeGroups };
 };
 
 export const fetchLookupPayload = async ({ onWarning = () => {} } = {}) => {
@@ -482,7 +510,12 @@ export const fetchLookupPayload = async ({ onWarning = () => {} } = {}) => {
     if (![person, unit_internal, unit_external].every(data => Array.isArray(data?.elements))) throw new Error('Dữ liệu đồng bộ iDesk không hợp lệ; kiểm tra phiên đăng nhập.');
     const catalog = await fetchOrganizationCatalog();
     if (catalog.warnings.length) onWarning(catalog.warnings.join(' '));
-    return { person, unit_internal, unit_external, unit_directory: { elements: catalog.elements } };
+    let groups;
+    try { groups = await fetchNativeUnitGroups(); }
+    catch { onWarning('Chưa đồng bộ được nhóm đơn vị trong tỉnh; cần kiểm tra nhóm khi điền.'); }
+    const units = new Map([...catalog.elements, ...(groups?.units || [])].map(node => [`${node.sphere}:${node.code}`, node]));
+    return { person, unit_internal, unit_external, unit_directory: { elements: [...units.values()] },
+        unit_groups: { elements: groups?.elements || [], complete: Boolean(groups) } };
 };
 
 export const downloadPDF = attachment => new Promise((resolve, reject) => {

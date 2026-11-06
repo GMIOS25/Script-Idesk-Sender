@@ -72,7 +72,7 @@ export const refreshSessionDocument = (session, doc) => {
     session.attachment = existing && chooseAttachment({ ...doc, attachments: [existing] })
         ? existing : chooseAttachment(doc);
     if (session.review && (!session.attachment ||
-        JSON.stringify(documentMetadata(doc, session.attachment)) !== JSON.stringify(session.metadata))) {
+        JSON.stringify(documentMetadata(doc, session.attachment, session.publication)) !== JSON.stringify(session.metadata))) {
         session.review = null;
         session.searchResults = null;
         session.searchError = '';
@@ -204,7 +204,7 @@ export const createDashboard = () => {
             if (!session.attachment) throw new Error('Văn bản không có tài liệu chính để phân tích.');
             await triggerBackgroundSync();
             const client = createSenderClient(settings);
-            const metadata = documentMetadata(doc, session.attachment);
+            const metadata = documentMetadata(doc, session.attachment, session.publication);
             const file = await downloadPDF(session.attachment);
             // Recheck after downloading: neither a cached API flag nor a hidden
             // template icon can authorize a document for backend upload.
@@ -213,7 +213,7 @@ export const createDashboard = () => {
             const nativeAttachment = (doc.attachments || []).find(item => item.contentUid === session.attachment.contentUid);
             if (!isDocumentEligible(row, doc) || !nativeAttachment ||
                 !chooseAttachment({ ...doc, attachments: [nativeAttachment] }) ||
-                JSON.stringify(documentMetadata(doc, nativeAttachment)) !== JSON.stringify(metadata)) {
+                JSON.stringify(documentMetadata(doc, nativeAttachment, session.publication)) !== JSON.stringify(metadata)) {
                 throw new Error('Văn bản hoặc tài liệu chính không còn đủ điều kiện.');
             }
             if (session.failed) session.retryNonce = crypto.randomUUID();
@@ -246,17 +246,36 @@ export const createDashboard = () => {
         const session = current();
         if (session) { session.applied = null; session.existingSummary = ''; }
         const payload = await verifyReview(session);
+        if (getTenantId() === 'vpub' && !session.metadata?.publication) {
+            throw new Error('Chọn phạm vi và ngày phát hành dự kiến rồi phân tích lại trước khi điền.');
+        }
         session.doc.detailsLoaded = false;
         const doc = await ensureDocumentDetails(session.doc.id);
         const nativeAttachment = (doc.attachments || []).find(item => item.contentUid === session.attachment.contentUid);
-        if (!nativeAttachment || JSON.stringify(documentMetadata(doc, nativeAttachment)) !== JSON.stringify(session.metadata)) {
+        if (!nativeAttachment || JSON.stringify(documentMetadata(doc, nativeAttachment, session.publication)) !== JSON.stringify(session.metadata)) {
             invalidate(session);
             throw new Error('Thông tin văn bản hoặc tài liệu chính đã thay đổi; cần phân tích lại.');
         }
-        await primeDirectories([...session.review.recipients.values()]);
+        const selectionPlan = session.review.result.selection_plan || [];
+        const groupDependencies = session.review.result.audit?.group_dependencies || selectionPlan;
+        const { nativeGroups } = await primeDirectories([...session.review.recipients.values()], { groups: groupDependencies.length > 0 });
+        for (const group of groupDependencies) {
+            const matches = nativeGroups.filter(native => native.id === group.group_id && native.sphere === group.sphere);
+            const live = matches.length === 1 ? matches[0] : null;
+            if (!live?.complete || live.member_codes.length !== group.member_codes.length
+                || live.member_codes.some(code => !group.member_codes.includes(code))) {
+                invalidate(session);
+                throw new Error('Thành viên nhóm iDesk đã thay đổi. Đồng bộ danh bạ rồi đối chiếu lại.');
+            }
+        }
         await session.client.checkVersions(session.review.result);
-        const result = await prepareOutgoingForm({ doc, recipients: [...session.review.recipients.values()], assignments: session.review.assignments, replaceExisting: session.replaceExisting, onStatus: status });
+        const result = await prepareOutgoingForm({ doc, recipients: [...session.review.recipients.values()],
+            assignments: session.review.assignments, selectionPlan, registryVersion: session.review.result.registry_version,
+            firstInsideCode: session.review.result.field_suggestions?.some(a => a.field === 'inside_unit') ? 'H21.21.04' : null,
+            publicationAssignments: session.review.result.field_suggestions, previousPolicyChips: session.publicationChips,
+            replaceExisting: session.replaceExisting, onStatus: status });
         session.applied = result.applied;
+        session.publicationChips = result.publicationChips;
         if (!session.feedbackId && session.client && session.jobId) {
             try {
                 const res = await session.client.feedback(session.jobId, payload);
@@ -395,6 +414,13 @@ export const createDashboard = () => {
         if (input.dataset.setting === 'attachment') {
             session.attachment = session.doc.attachments.find(item => item.contentUid === input.value);
             session.previewUrl = previewUrl(session.attachment);
+            session.review = null; session.retryNonce = ''; invalidate(session);
+        } else if (['publication-date', 'publication-scope'].includes(input.dataset.setting)) {
+            const date = detail.querySelector('[data-setting="publication-date"]').value;
+            const scope = detail.querySelector('[data-setting="publication-scope"]').value;
+            session.publicationDate = date;
+            session.publicationScope = scope;
+            session.publication = date && scope ? { mode: 'confirmed_intent', date, external: scope === 'external' } : undefined;
             session.review = null; session.retryNonce = ''; invalidate(session);
         } else if (input.dataset.setting === 'reviewed') session.reviewed = input.checked;
         else if (input.dataset.setting === 'replace') session.replaceExisting = input.checked;

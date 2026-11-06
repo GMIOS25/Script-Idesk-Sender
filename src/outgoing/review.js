@@ -26,9 +26,16 @@ export const createReview = result => {
         validateIdentity(recipient);
         recipients.set(recipient.recipient_id, recipient);
     }
+    const assignments = Object.fromEntries([...recipients.values()].map(r => [r.recipient_id, initialFields(r)]));
+    for (const { recipient_id: id, field } of result.field_suggestions || []) {
+        if (!recipients.has(id) || !recipientFields(recipients.get(id)).includes(field)) {
+            throw new Error('Đề xuất trường người nhận không khớp định danh.');
+        }
+        assignments[id] = [...new Set([...assignments[id], field])];
+    }
     return {
         result, recipients, explicitRecipients: new Set(recipients.keys()),
-        assignments: Object.fromEntries([...recipients.values()].map(r => [r.recipient_id, initialFields(r)])),
+        assignments,
         decisions: new Map(), edits: []
     };
 };
@@ -90,6 +97,12 @@ export const setDecisionRecipient = (review, mentionId, recipient, included) => 
 
 export const reviewProblems = review => {
     const problems = [];
+    if (review.result.audit?.publication?.missing?.length) problems.push('Chưa xác minh đủ đích theo quy trình phát hành. Đồng bộ danh bạ rồi đối chiếu lại.');
+    for (const { recipient_id: id, field } of review.result.field_suggestions || []) {
+        if (!review.recipients.has(id) || !review.assignments[id]?.includes(field)) {
+            problems.push('Cần giữ người nhận và trường theo quy trình phát hành đã chọn.');
+        }
+    }
     if (!review.recipients.size) problems.push('Chưa có người nhận trong danh sách cuối.');
     for (const recipient of review.recipients.values()) {
         const fields = review.assignments[recipient.recipient_id] || [];

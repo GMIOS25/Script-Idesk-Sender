@@ -6,6 +6,12 @@ export const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, chara
 const e = escapeHtml;
 const FIELD_LABELS = { responsible: 'Xử lý văn bản đi', save: 'Chuyển để biết', participants: 'Phối hợp xử lý', follow: 'Theo dõi', inside_unit: 'Trong tỉnh', outside_unit: 'Ngoài tỉnh' };
 const REASONS = { extraction_partial: 'Chưa đọc đầy đủ tài liệu', extraction_failed: 'Chưa đọc được tài liệu', provider_unavailable: 'Model phân tích chưa khả dụng', ambiguous: 'Có nhiều định danh phù hợp', no_match: 'Chưa tìm thấy trong danh bạ', unverified_alias: 'Tên viết tắt chưa được xác minh' };
+Object.assign(REASONS, {
+    conflicting_group_scope: 'Phạm vi nhóm có phần bổ sung hoặc ngoại lệ cần kiểm tra',
+    commune_list_unverified: 'Chưa xác minh đủ danh sách xã, phường',
+    missing_group_membership: 'Chưa xác minh được thành viên của nhóm',
+    publication_policy_identity_unverified: 'Chưa xác minh được đích theo quy trình phát hành',
+});
 export const reasonLabel = reason => REASONS[reason] || reason;
 const displayName = recipient => recipient.display_name || recipient.name || recipient.recipient_id;
 const sphereLabel = sphere => ({ internal: 'Nội bộ', int_province_comm: 'Trong tỉnh', ext_province_comm: 'Ngoài tỉnh' })[sphere] || sphere;
@@ -45,8 +51,12 @@ const metadataHtml = (session, savedDocs = {}) => {
     const doc = session.doc;
     const attachments = doc.selectionMarker === 'book' ? getNumberMatchedAttachments(doc) : (doc.attachments || []);
     const saved = savedDocs[String(doc?.id)];
+    const date = session.publicationDate ?? new Date(Date.now() + 7 * 3600000).toISOString().slice(0, 10);
+    const scope = session.publicationScope || '';
     return `<h2>${e(doc.signNumber || 'Văn bản đi')}</h2><p class="sender-subject">${e(doc.subject)}</p><div class="sender-meta"><span>ID ${e(doc.id)}</span><span>${doc.selectionMarker === 'book' ? 'Đã vào sổ' : 'Đã chuyển nội bộ'}</span>${Number(doc.externalTransfer) > 0 ? '<span>Đã gửi liên thông</span>' : ''}${saved ? `<span class="sender-tag-saved">✓ Đã lưu rà soát (${new Date(saved.savedAt).toLocaleDateString('vi-VN')})</span>` : ''}</div>
         <label class="sender-label">Tài liệu chính<select data-setting="attachment">${attachments.map(item => `<option value="${e(item.contentUid)}" ${item.contentUid === session.attachment?.contentUid ? 'selected' : ''}>${e(item.name)}${item.signed === 'Y' ? ' · Đã ký' : ''}</option>`).join('') || '<option value="">Không có tài liệu chính phù hợp</option>'}</select></label>
+        <label class="sender-label">Ngày phát hành dự kiến<input type="date" data-setting="publication-date" value="${e(date)}"></label>
+        <label class="sender-label">Phạm vi phát hành dự kiến<select data-setting="publication-scope"><option value="">Chưa chọn</option><option value="external" ${scope === 'external' ? 'selected' : ''}>Phát hành ra ngoài cơ quan</option><option value="internal" ${scope === 'internal' ? 'selected' : ''}>Chỉ chuyển nội bộ</option></select></label>
         ${session.previewUrl ? `<a href="${e(session.previewUrl)}" target="_blank" rel="noopener">Mở PDF để đối chiếu</a>` : ''}`;
 };
 
@@ -58,6 +68,7 @@ export const renderReview = (session, savedDocs = {}) => {
     if (!session.review) return `${meta}${session.error ? `<p class="sender-warning" role="alert">${e(session.error)}</p>` : ''}<p>Gửi tài liệu chính đến backend để xác định người và đơn vị nhận.</p><button type="button" class="sender-primary" data-action="analyze" data-id="${e(session.doc.id)}" ${!session.attachment ? 'disabled' : ''}>${isSaved ? 'Phân tích lại' : 'Phân tích văn bản này'}</button>`;
     const review = session.review;
     const result = review.result;
+    const publication = result.audit?.publication;
     const problems = reviewProblems(review);
     const final = [...review.recipients.values()];
     const unresolved = (result.unresolved || []).map(item => {
@@ -73,6 +84,7 @@ export const renderReview = (session, savedDocs = {}) => {
     const audit = (result.mentions || []).map(mention => `<div><strong>${e(mention.raw)}</strong>${evidence(mention.evidence)}</div>`).join('')
         + (result.excluded || []).map(item => `<div><strong>Đã loại: ${e(item.raw)}</strong><p>${e(reasonLabel(item.reason))}</p>${evidence(item.evidence)}</div>`).join('');
     return `${meta}<div class="sender-result-summary"><strong>${result.needs_review || problems.length ? 'Cần rà soát' : 'Đã phân tích'}</strong><span>${final.length} người/đơn vị · ${e(result.extraction_status === 'complete' ? 'Đã đọc đầy đủ' : 'Chưa đọc đầy đủ')}</span></div>
+        ${publication ? `<p>Đã áp dụng quy trình phát hành ra ngoài của VPUB cho ngày ${e(publication.date)}.</p>` : ''}
         ${unresolved ? `<h3>Các mục cần quyết định</h3>${unresolved}` : ''}${reasonRows ? `<h3>Cảnh báo cần đối chiếu</h3>${reasonRows}` : ''}
         <details><summary>Bằng chứng và các mục đã loại</summary>${audit || '<p>Chưa có bằng chứng trích xuất.</p>'}<small>Danh bạ ${e(result.registry_version.slice(0, 12))} · Chính sách ${e(result.alias_policy_version.slice(0, 12))}</small></details>
         ${problems.length ? `<div class="sender-warning">${problems.length} mục cần hoàn tất trước khi điền.</div>` : ''}

@@ -63,6 +63,46 @@ function addChip(field, id) {
     return chip;
 }
 
+test('checks current group membership and clicks the native group once', async () => {
+    const other = { ...unit, recipient_id: 'comm_other', code: 'H21.19' };
+    globalThis.__formBridge.organizationDirectory.set('int_province_comm:H21.19', other);
+    const field = state.fields.inside_unit;
+    field.popup.one.set('a.user-box-tab[data-type="group"]', new Element());
+    let clicks = 0;
+    const group = new Element({ 'data-id': 'g1' }, () => {
+        clicks++;
+        addChip(field, unit.code);
+        addChip(field, other.code);
+    });
+    group.classList = { contains: () => false };
+    field.popup.many.set('[data-role="group"] a.user-box-group-item[data-id]', () => [group]);
+    globalThis.window = { jQuery: () => ({ data: () => ({ type: 'group', units: [unit, other] }) }) };
+    const options = { doc, recipients: [unit, other], assignments: { comm_21: ['inside_unit'], comm_other: ['inside_unit'] },
+        registryVersion: 'r', selectionPlan: [{ group_id: 'g1', sphere: unit.sphere,
+            registry_version: 'r', member_codes: [unit.code, other.code] }] };
+    try {
+        globalThis.window.jQuery = () => ({ data: () => ({ type: 'group', units: [unit, { code: 'H21.99' }] }) });
+        await assert.rejects(api.prepareOutgoingForm(options), /Thành viên nhóm/);
+        assert.equal(clicks, 0);
+        globalThis.window.jQuery = () => ({ data: () => ({ type: 'group', units: [unit, other] }) });
+        assert.equal((await api.prepareOutgoingForm(options)).applied.length, 2);
+        assert.equal(clicks, 1);
+        assert.equal(state.submitted, 0);
+    } finally { delete globalThis.window; }
+});
+
+test('rejects leftover policy chips after publication scope changes', async () => {
+    const first = await api.prepareOutgoingForm({ doc, recipients: [person, unit],
+        assignments: { internal_270: ['responsible', 'save'], comm_21: ['inside_unit'] },
+        publicationAssignments: [{ recipient_id: 'internal_270', field: 'responsible' }] });
+    assert.deepEqual(first.publicationChips, [{ field: 'responsible', id: '270' }, { field: 'save', id: '270' }]);
+    state.fields.responsible.chips = [];
+    await assert.rejects(api.prepareOutgoingForm({ doc, recipients: [unit],
+        assignments: { comm_21: ['inside_unit'] }, previousPolicyChips: first.publicationChips,
+        replaceExisting: true }), /phạm vi phát hành trước/);
+    assert.equal(state.submitted, 0);
+});
+
 function fieldFixture(key) {
     const field = new Element({ id: `ed-full-transfer-${prefixes[key]}` });
     field.chips = [];
