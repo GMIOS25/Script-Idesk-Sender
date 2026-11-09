@@ -32,8 +32,15 @@ function validateMetadata(metadata) {
 
 export function documentMetadata(doc, attachment, publication) {
     const metadata = { document_id: doc?.id == null ? '' : String(doc.id) };
+    const signNum = doc?.signNumber || '';
+    let issuer = doc?.author != null && doc?.author !== '' ? String(doc.author) : '';
+    if (!issuer && (signNum.includes('/UBND') || signNum.includes('/VPUBND'))) {
+        issuer = 'Ủy ban nhân dân tỉnh Gia Lai';
+    } else if (issuer && !issuer.toLowerCase().includes('gia lai') && (signNum.includes('/UBND') || signNum.includes('/VPUBND'))) {
+        issuer = 'Ủy ban nhân dân tỉnh Gia Lai';
+    }
     for (const [field, value] of Object.entries({
-        sign_number: doc?.signNumber, subject: doc?.subject, issuer: doc?.author,
+        sign_number: doc?.signNumber, subject: doc?.subject, issuer,
         attachment_content_uid: attachment?.contentUid, attachment_name: attachment?.name
     })) {
         if (value != null && value !== '') metadata[field] = String(value);

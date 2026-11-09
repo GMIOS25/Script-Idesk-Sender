@@ -85,7 +85,7 @@ export const renderReview = (session, savedDocs = {}) => {
         + (result.excluded || []).map(item => `<div><strong>Đã loại: ${e(item.raw)}</strong><p>${e(reasonLabel(item.reason))}</p>${evidence(item.evidence)}</div>`).join('');
     return `${meta}<div class="sender-result-summary"><strong>${result.needs_review || problems.length ? 'Cần rà soát' : 'Đã phân tích'}</strong><span>${final.length} người/đơn vị · ${e(result.extraction_status === 'complete' ? 'Đã đọc đầy đủ' : 'Chưa đọc đầy đủ')}</span></div>
         ${publication ? `<p>Đã áp dụng quy trình phát hành ra ngoài của VPUB cho ngày ${e(publication.date)}.</p>` : ''}
-        ${unresolved ? `<h3>Các mục cần quyết định</h3>${unresolved}` : ''}${reasonRows ? `<h3>Cảnh báo cần đối chiếu</h3>${reasonRows}` : ''}
+        ${unresolved ? `<details class="sender-unresolved-details"><summary>Các mục trích xuất chưa khớp danh bạ (dành cho dev đối chiếu — ${(result.unresolved || []).length} mục)</summary>${unresolved}</details>` : ''}${reasonRows ? `<h3>Cảnh báo cần đối chiếu</h3>${reasonRows}` : ''}
         <details><summary>Bằng chứng và các mục đã loại</summary>${audit || '<p>Chưa có bằng chứng trích xuất.</p>'}<small>Danh bạ ${e(result.registry_version.slice(0, 12))} · Chính sách ${e(result.alias_policy_version.slice(0, 12))}</small></details>
         ${problems.length ? `<div class="sender-warning">${problems.length} mục cần hoàn tất trước khi điền.</div>` : ''}
         <label class="sender-check"><input type="checkbox" data-setting="reviewed" ${session.reviewed ? 'checked' : ''}> Tôi đã đối chiếu PDF, người nhận và các trường sẽ điền.</label>

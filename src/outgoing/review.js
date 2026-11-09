@@ -111,6 +111,9 @@ export const reviewProblems = review => {
     }
     for (const item of review.result.unresolved || []) {
         const decision = review.decisions.get(item.mention_id);
+        if (!decision && (!item.candidates || item.candidates.length === 0)) {
+            continue;
+        }
         const resolved = decision?.action === 'resolve' && decision.recipient_ids.length > 0
             && decision.recipient_ids.every(id => review.recipients.has(id));
         const omitted = ['exclude', 'accept_missing'].includes(decision?.action)
@@ -127,12 +130,24 @@ export const buildFeedback = (review, { confirmed = true } = {}) => {
         validateIdentity(recipient);
         return { recipient_id: recipient.recipient_id, recipient_type: recipient.recipient_type, sphere: recipient.sphere, code: recipient.code };
     });
+    const reviewDecisions = [...review.decisions.values()];
+    const addressedIds = new Set(reviewDecisions.map(d => d.mention_id));
+    for (const item of review.result.unresolved || []) {
+        if (!addressedIds.has(item.mention_id)) {
+            reviewDecisions.push({
+                mention_id: item.mention_id,
+                action: 'accept_missing',
+                note: 'Không có trong danh bạ',
+                recipient_ids: []
+            });
+        }
+    }
     return {
         registry_version: review.result.registry_version,
         alias_policy_version: review.result.alias_policy_version,
         final_recipients: finalRecipients,
         field_assignments: [...review.recipients.values()].flatMap(recipient =>
             (review.assignments[recipient.recipient_id] || []).map(field => ({ recipient_id: recipient.recipient_id, field }))),
-        review_decisions: [...review.decisions.values()], edits: review.edits, confirmed
+        review_decisions: reviewDecisions, edits: review.edits, confirmed
     };
 };
