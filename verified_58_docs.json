@@ -1,0 +1,1114 @@
+[
+  {
+    "stt": 16,
+    "so_hieu": "13096/UBND-KTTH",
+    "range": "342-517",
+    "r1": 342,
+    "r2": 517,
+    "group": "Nhóm 2 (Khớp mờ bỏ sót Dư & Ngoại lệ)",
+    "h_du": 26,
+    "act_y": 27,
+    "h_thieu": 2,
+    "act_r": 2,
+    "act_ex": 1,
+    "exc_item": [
+      517,
+      "UBND phường Quy Nhơn Nam - Tỉnh Gia..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 17,
+    "so_hieu": "13095/UBND-NC",
+    "range": "518-765",
+    "r1": 518,
+    "r2": 765,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 60,
+    "act_y": 60,
+    "h_thieu": 3,
+    "act_r": 2,
+    "act_ex": 1,
+    "exc_item": [
+      765,
+      "Bộ Chỉ huy Quân sự tỉnh G..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 21,
+    "so_hieu": "13091/UBND-NC",
+    "range": "814-909",
+    "r1": 814,
+    "r2": 909,
+    "group": "Nhóm 3 (Khử trùng lặp dòng Vàng)",
+    "h_du": 33,
+    "act_y": 34,
+    "h_thieu": 0,
+    "act_r": 0,
+    "act_ex": 0,
+    "exc_item": null,
+    "dup_items": {
+      "Đảng ủy Ủy ban nhân dân tỉnh Gia Lai (A21.07)": 2
+    },
+    "num_dup_rows": 1
+  },
+  {
+    "stt": 23,
+    "so_hieu": "13089/UBND-NNMT",
+    "range": "920-1084",
+    "r1": 920,
+    "r2": 1084,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 21,
+    "act_y": 21,
+    "h_thieu": 3,
+    "act_r": 2,
+    "act_ex": 1,
+    "exc_item": [
+      1084,
+      "UBND phường Ho..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 25,
+    "so_hieu": "13087/UBND-NNMT",
+    "range": "1095-1243",
+    "r1": 1095,
+    "r2": 1243,
+    "group": "Nhóm 2 (Khớp mờ bỏ sót Dư & Ngoại lệ)",
+    "h_du": 3,
+    "act_y": 4,
+    "h_thieu": 1,
+    "act_r": 1,
+    "act_ex": 1,
+    "exc_item": [
+      1243,
+      "UBND xã Bình An - Tỉnh Gia..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 46,
+    "so_hieu": "13066/UBND-XDCT",
+    "range": "1609-1779",
+    "r1": 1609,
+    "r2": 1779,
+    "group": "Nhóm 2 (Khớp mờ bỏ sót Dư & Ngoại lệ)",
+    "h_du": 21,
+    "act_y": 23,
+    "h_thieu": 0,
+    "act_r": 0,
+    "act_ex": 1,
+    "exc_item": [
+      1779,
+      "Ban QLDA các ..."
+    ],
+    "dup_items": {
+      "Sở Nông nghiệp và Môi trường - tỉnh Gia Lai (H21.24)": 2
+    },
+    "num_dup_rows": 1
+  },
+  {
+    "stt": 67,
+    "so_hieu": "13045/UBND-XDCT",
+    "range": "2238-2386",
+    "r1": 2238,
+    "r2": 2386,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 1,
+    "act_y": 1,
+    "h_thieu": 2,
+    "act_r": 1,
+    "act_ex": 1,
+    "exc_item": [
+      2386,
+      "..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 78,
+    "so_hieu": "13034/UBND-KGVX",
+    "range": "2623-2792",
+    "r1": 2623,
+    "r2": 2792,
+    "group": "Nhóm 2 (Khớp mờ bỏ sót Dư & Ngoại lệ)",
+    "h_du": 13,
+    "act_y": 14,
+    "h_thieu": 0,
+    "act_r": 0,
+    "act_ex": 1,
+    "exc_item": [
+      2792,
+      "Xã Chư Sê - tỉnh Gia L..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 81,
+    "so_hieu": "13031/UBND-NNMT",
+    "range": "2820-2967",
+    "r1": 2820,
+    "r2": 2967,
+    "group": "Nhóm 2 (Khớp mờ bỏ sót Dư & Ngoại lệ)",
+    "h_du": 1,
+    "act_y": 2,
+    "h_thieu": 1,
+    "act_r": 1,
+    "act_ex": 1,
+    "exc_item": [
+      2967,
+      "UBND phường Hoài Nhơn..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 86,
+    "so_hieu": "13026/UBND-NC",
+    "range": "3036-3294",
+    "r1": 3036,
+    "r2": 3294,
+    "group": "Nhóm 2 (Khớp mờ bỏ sót Dư & Ngoại lệ)",
+    "h_du": 61,
+    "act_y": 63,
+    "h_thieu": 0,
+    "act_r": 0,
+    "act_ex": 1,
+    "exc_item": [
+      3294,
+      "Ban Quản lý Khu kinh tế - tỉnh ..."
+    ],
+    "dup_items": {
+      "Ban Quản lý Khu kinh tế - tỉnh Gia Lai (H21.02)": 2
+    },
+    "num_dup_rows": 1
+  },
+  {
+    "stt": 92,
+    "so_hieu": "13020/UBND-NC",
+    "range": "3405-3582",
+    "r1": 3405,
+    "r2": 3582,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 26,
+    "act_y": 26,
+    "h_thieu": 6,
+    "act_r": 5,
+    "act_ex": 1,
+    "exc_item": [
+      3582,
+      "U..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 96,
+    "so_hieu": "13016/UBND-KGVX",
+    "range": "3629-3802",
+    "r1": 3629,
+    "r2": 3802,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 24,
+    "act_y": 24,
+    "h_thieu": 5,
+    "act_r": 4,
+    "act_ex": 1,
+    "exc_item": [
+      3802,
+      "U..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 98,
+    "so_hieu": "13014/UBND-NNMT",
+    "range": "3814-4018",
+    "r1": 3814,
+    "r2": 4018,
+    "group": "Nhóm 2 (Khớp mờ bỏ sót Dư & Ngoại lệ)",
+    "h_du": 31,
+    "act_y": 34,
+    "h_thieu": 8,
+    "act_r": 8,
+    "act_ex": 1,
+    "exc_item": [
+      4018,
+      "Xã Ia Pnôn -..."
+    ],
+    "dup_items": {
+      "Sở Công Thương - tỉnh Gia Lai (H21.05)": 2,
+      "Sở Văn hóa, Thể thao và Du lịch - tỉnh Gia Lai (H21.17)": 2
+    },
+    "num_dup_rows": 2
+  },
+  {
+    "stt": 99,
+    "so_hieu": "13013/UBND-NC",
+    "range": "4019-4032",
+    "r1": 4019,
+    "r2": 4032,
+    "group": "Nhóm 4 (Ghi sai Dư dù bảng tính 100% xanh)",
+    "h_du": 1,
+    "act_y": 0,
+    "h_thieu": 0,
+    "act_r": 0,
+    "act_ex": 0,
+    "exc_item": null,
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 100,
+    "so_hieu": "13012/UBND-NC",
+    "range": "4033-4165",
+    "r1": 4033,
+    "r2": 4165,
+    "group": "Nhóm 3 (Khử trùng lặp dòng Vàng)",
+    "h_du": 35,
+    "act_y": 38,
+    "h_thieu": 2,
+    "act_r": 2,
+    "act_ex": 0,
+    "exc_item": null,
+    "dup_items": {
+      "Ban QLDA các công trình Giao thông và Dân dụng tỉnh Gia Lai (H21.40)": 2,
+      "Ban Quản lý Dự án Nông nghiệp và Phát triển nông thôn tỉnh Gia Lai (H21.41)": 2,
+      "Trung tâm Phát triển Quỹ đất - tỉnh Gia Lai (H21.49)": 2
+    },
+    "num_dup_rows": 3
+  },
+  {
+    "stt": 107,
+    "so_hieu": "13005/UBND-NC",
+    "range": "4378-4557",
+    "r1": 4378,
+    "r2": 4557,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 22,
+    "act_y": 22,
+    "h_thieu": 6,
+    "act_r": 5,
+    "act_ex": 1,
+    "exc_item": [
+      4557,
+      "UBND phường..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 108,
+    "so_hieu": "13004/UBND-NC",
+    "range": "4558-4730",
+    "r1": 4558,
+    "r2": 4730,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 22,
+    "act_y": 22,
+    "h_thieu": 4,
+    "act_r": 3,
+    "act_ex": 1,
+    "exc_item": [
+      4730,
+      "Phường Hội..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 110,
+    "so_hieu": "13001/UBND-XDCT",
+    "range": "4746-4893",
+    "r1": 4746,
+    "r2": 4893,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 3,
+    "act_y": 3,
+    "h_thieu": 2,
+    "act_r": 1,
+    "act_ex": 1,
+    "exc_item": [
+      4893,
+      "Xã Chư Pưh - t..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 123,
+    "so_hieu": "12988/UBND-NC",
+    "range": "5062-5232",
+    "r1": 5062,
+    "r2": 5232,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 23,
+    "act_y": 23,
+    "h_thieu": 4,
+    "act_r": 3,
+    "act_ex": 1,
+    "exc_item": [
+      5232,
+      "Xã Kông Chro - tỉnh Gia L..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 130,
+    "so_hieu": "12981/UBND-NC",
+    "range": "5351-5398",
+    "r1": 5351,
+    "r2": 5398,
+    "group": "Nhóm 3 (Khử trùng lặp dòng Vàng)",
+    "h_du": 4,
+    "act_y": 8,
+    "h_thieu": 3,
+    "act_r": 3,
+    "act_ex": 0,
+    "exc_item": null,
+    "dup_items": {
+      "Ban QLDA các công trình Giao thông và Dân dụng tỉnh Gia Lai (H21.40)": 2,
+      "Ban Quản lý Dự án Nông nghiệp và Phát triển nông thôn tỉnh Gia Lai (H21.41)": 2,
+      "Ban Quản lý các dự án đầu tư xây dựng tỉnh Gia Lai (H21.38)": 2,
+      "Trung tâm Phát triển Quỹ đất - tỉnh Gia Lai (H21.49)": 2
+    },
+    "num_dup_rows": 4
+  },
+  {
+    "stt": 137,
+    "so_hieu": "12974/UBND-XDCT",
+    "range": "5499-5646",
+    "r1": 5499,
+    "r2": 5646,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 3,
+    "act_y": 3,
+    "h_thieu": 2,
+    "act_r": 1,
+    "act_ex": 1,
+    "exc_item": [
+      5646,
+      "UBND xã ..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 142,
+    "so_hieu": "12969/UBND-NC",
+    "range": "5701-5866",
+    "r1": 5701,
+    "r2": 5866,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 23,
+    "act_y": 23,
+    "h_thieu": 3,
+    "act_r": 2,
+    "act_ex": 1,
+    "exc_item": [
+      5866,
+      "Xã Ia Krái - tỉnh Gia Lai..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 143,
+    "so_hieu": "12967/UBND-PVHCC",
+    "range": "5867-6042",
+    "r1": 5867,
+    "r2": 6042,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 2,
+    "act_y": 2,
+    "h_thieu": 30,
+    "act_r": 29,
+    "act_ex": 1,
+    "exc_item": [
+      6042,
+      "UBND Xã Vĩnh Thạnh - Tỉnh Gia..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 152,
+    "so_hieu": "12958/UBND-NC",
+    "range": "6154-6326",
+    "r1": 6154,
+    "r2": 6326,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 20,
+    "act_y": 20,
+    "h_thieu": 1,
+    "act_r": 0,
+    "act_ex": 1,
+    "exc_item": [
+      6326,
+      "Xã..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 172,
+    "so_hieu": "12938/UBND-KGVX",
+    "range": "6628-6785",
+    "r1": 6628,
+    "r2": 6785,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 5,
+    "act_y": 5,
+    "h_thieu": 2,
+    "act_r": 1,
+    "act_ex": 1,
+    "exc_item": [
+      6785,
+      "Cơ quan ..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 180,
+    "so_hieu": "12930/UBND-NC",
+    "range": "6905-7084",
+    "r1": 6905,
+    "r2": 7084,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 32,
+    "act_y": 32,
+    "h_thieu": 6,
+    "act_r": 5,
+    "act_ex": 1,
+    "exc_item": [
+      7084,
+      "UBND Xã ..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 181,
+    "so_hieu": "12929/UBND-NNMT",
+    "range": "7085-7245",
+    "r1": 7085,
+    "r2": 7245,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 4,
+    "act_y": 4,
+    "h_thieu": 8,
+    "act_r": 7,
+    "act_ex": 1,
+    "exc_item": [
+      7245,
+      "UBND xã T..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 183,
+    "so_hieu": "12927/UBND-NC",
+    "range": "7266-7442",
+    "r1": 7266,
+    "r2": 7442,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 23,
+    "act_y": 23,
+    "h_thieu": 10,
+    "act_r": 9,
+    "act_ex": 1,
+    "exc_item": [
+      7442,
+      "Phường..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 187,
+    "so_hieu": "12923/UBND-NC",
+    "range": "7590-7759",
+    "r1": 7590,
+    "r2": 7759,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 23,
+    "act_y": 23,
+    "h_thieu": 1,
+    "act_r": 0,
+    "act_ex": 1,
+    "exc_item": [
+      7759,
+      "Ph..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 191,
+    "so_hieu": "12919/UBND-NC",
+    "range": "7836-7998",
+    "r1": 7836,
+    "r2": 7998,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 6,
+    "act_y": 6,
+    "h_thieu": 2,
+    "act_r": 1,
+    "act_ex": 1,
+    "exc_item": [
+      7998,
+      "UBND ..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 193,
+    "so_hieu": "12917/UBND-NC",
+    "range": "8017-8265",
+    "r1": 8017,
+    "r2": 8265,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 51,
+    "act_y": 51,
+    "h_thieu": 1,
+    "act_r": 0,
+    "act_ex": 1,
+    "exc_item": [
+      8265,
+      "UBND..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 222,
+    "so_hieu": "12888/UBND-NNMT",
+    "range": "8902-9051",
+    "r1": 8902,
+    "r2": 9051,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 6,
+    "act_y": 6,
+    "h_thieu": 1,
+    "act_r": 0,
+    "act_ex": 1,
+    "exc_item": [
+      9051,
+      "Xã ..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 237,
+    "so_hieu": "12873/UBND-XDCT",
+    "range": "9334-9483",
+    "r1": 9334,
+    "r2": 9483,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 3,
+    "act_y": 3,
+    "h_thieu": 2,
+    "act_r": 1,
+    "act_ex": 1,
+    "exc_item": [
+      9483,
+      "UBND phường Hoài N..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 249,
+    "so_hieu": "12861/UBND-KGVX",
+    "range": "9673-9838",
+    "r1": 9673,
+    "r2": 9838,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 24,
+    "act_y": 24,
+    "h_thieu": 3,
+    "act_r": 2,
+    "act_ex": 1,
+    "exc_item": [
+      9838,
+      "Xã Canh Vinh - T..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 250,
+    "so_hieu": "12860/UBND-KGVX",
+    "range": "9839-10008",
+    "r1": 9839,
+    "r2": 10008,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 24,
+    "act_y": 24,
+    "h_thieu": 2,
+    "act_r": 1,
+    "act_ex": 1,
+    "exc_item": [
+      10008,
+      "Ph..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 260,
+    "so_hieu": "12850/UBND-XDCT",
+    "range": "10153-10318",
+    "r1": 10153,
+    "r2": 10318,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 23,
+    "act_y": 23,
+    "h_thieu": 4,
+    "act_r": 3,
+    "act_ex": 1,
+    "exc_item": [
+      10318,
+      "UBND ..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 265,
+    "so_hieu": "12845/UBND-KTTH",
+    "range": "10380-10429",
+    "r1": 10380,
+    "r2": 10429,
+    "group": "Nhóm 3 (Khử trùng lặp dòng Vàng)",
+    "h_du": 5,
+    "act_y": 9,
+    "h_thieu": 3,
+    "act_r": 3,
+    "act_ex": 0,
+    "exc_item": null,
+    "dup_items": {
+      "Ban QLDA các công trình Giao thông và Dân dụng tỉnh Gia Lai (H21.40)": 2,
+      "Ban Quản lý Dự án Nông nghiệp và Phát triển nông thôn tỉnh Gia Lai (H21.41)": 2,
+      "Ban Quản lý các dự án đầu tư xây dựng tỉnh Gia Lai (H21.38)": 2,
+      "Trung tâm Phát triển Quỹ đất - tỉnh Gia Lai (H21.49)": 2
+    },
+    "num_dup_rows": 4
+  },
+  {
+    "stt": 282,
+    "so_hieu": "12828/UBND-KGVX",
+    "range": "10882-11064",
+    "r1": 10882,
+    "r2": 11064,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 25,
+    "act_y": 25,
+    "h_thieu": 8,
+    "act_r": 7,
+    "act_ex": 1,
+    "exc_item": [
+      11064,
+      "UBND..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 305,
+    "so_hieu": "12805/UBND-NC",
+    "range": "11346-11491",
+    "r1": 11346,
+    "r2": 11491,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 1,
+    "act_y": 1,
+    "h_thieu": 1,
+    "act_r": 0,
+    "act_ex": 1,
+    "exc_item": [
+      11491,
+      "UBND xã Ngô Mây - Tỉnh G..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 308,
+    "so_hieu": "12802/UBND-KTTH",
+    "range": "11515-11683",
+    "r1": 11515,
+    "r2": 11683,
+    "group": "Hỗn hợp: Nhóm 1 + Nhóm 3 (Gom Ngoại lệ vào Thiếu VÀ Khử trùng lặp dòng Vàng)",
+    "h_du": 22,
+    "act_y": 23,
+    "h_thieu": 4,
+    "act_r": 3,
+    "act_ex": 1,
+    "exc_item": [
+      11683,
+      "UBND ..."
+    ],
+    "dup_items": {
+      "Sở Tài chính - tỉnh Gia Lai (H21.13)": 2
+    },
+    "num_dup_rows": 1
+  },
+  {
+    "stt": 330,
+    "so_hieu": "12780/UBND-KTTH",
+    "range": "12027-12201",
+    "r1": 12027,
+    "r2": 12201,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 26,
+    "act_y": 26,
+    "h_thieu": 2,
+    "act_r": 1,
+    "act_ex": 1,
+    "exc_item": [
+      12201,
+      "Xã Bờ Ngoong - tỉnh Gia Lai..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 331,
+    "so_hieu": "12779/UBND-NC",
+    "range": "12202-12360",
+    "r1": 12202,
+    "r2": 12360,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 17,
+    "act_y": 17,
+    "h_thieu": 1,
+    "act_r": 0,
+    "act_ex": 1,
+    "exc_item": [
+      12360,
+      "Sở Khoa học ..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 341,
+    "so_hieu": "12769/UBND-KTTH",
+    "range": "12645-12813",
+    "r1": 12645,
+    "r2": 12813,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 20,
+    "act_y": 20,
+    "h_thieu": 3,
+    "act_r": 2,
+    "act_ex": 1,
+    "exc_item": [
+      12813,
+      "UBND ..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 344,
+    "so_hieu": "12765/UBND-NNMT",
+    "range": "12973-13126",
+    "r1": 12973,
+    "r2": 13126,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 1,
+    "act_y": 1,
+    "h_thieu": 1,
+    "act_r": 0,
+    "act_ex": 1,
+    "exc_item": [
+      13126,
+      "UBND Xã Ân Tư..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 349,
+    "so_hieu": "12760/UBND-KGVX",
+    "range": "13163-13317",
+    "r1": 13163,
+    "r2": 13317,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 6,
+    "act_y": 6,
+    "h_thieu": 1,
+    "act_r": 0,
+    "act_ex": 1,
+    "exc_item": [
+      13317,
+      "Xã Ia Nan - tỉnh Gia La..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 350,
+    "so_hieu": "12759/UBND-KGVX",
+    "range": "13318-13481",
+    "r1": 13318,
+    "r2": 13481,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 10,
+    "act_y": 10,
+    "h_thieu": 7,
+    "act_r": 6,
+    "act_ex": 1,
+    "exc_item": [
+      13481,
+      "Trung tâm Ph..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 352,
+    "so_hieu": "12757/UBND-PVHCC",
+    "range": "13499-13688",
+    "r1": 13499,
+    "r2": 13688,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 15,
+    "act_y": 15,
+    "h_thieu": 30,
+    "act_r": 29,
+    "act_ex": 1,
+    "exc_item": [
+      13688,
+      "UBND xã Phù Mỹ - Tỉn..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 366,
+    "so_hieu": "12743/UBND-KGVX",
+    "range": "13845-14001",
+    "r1": 13845,
+    "r2": 14001,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 3,
+    "act_y": 3,
+    "h_thieu": 1,
+    "act_r": 0,
+    "act_ex": 1,
+    "exc_item": [
+      14001,
+      "UBND xã Vĩnh Sơn - Tinh Gia Lai..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 367,
+    "so_hieu": "12742/UBND-KTTH",
+    "range": "14002-14254",
+    "r1": 14002,
+    "r2": 14254,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 57,
+    "act_y": 57,
+    "h_thieu": 2,
+    "act_r": 1,
+    "act_ex": 1,
+    "exc_item": [
+      14254,
+      "Xã Ia Mơ - tỉ..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 372,
+    "so_hieu": "12737/UBND-NC",
+    "range": "14301-14467",
+    "r1": 14301,
+    "r2": 14467,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 25,
+    "act_y": 25,
+    "h_thieu": 7,
+    "act_r": 6,
+    "act_ex": 1,
+    "exc_item": [
+      14467,
+      "Xã Ia Khươl - tỉnh Gia L..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 373,
+    "so_hieu": "12736/UBND-KGVX",
+    "range": "14468-14613",
+    "r1": 14468,
+    "r2": 14613,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 2,
+    "act_y": 2,
+    "h_thieu": 1,
+    "act_r": 0,
+    "act_ex": 1,
+    "exc_item": [
+      14613,
+      "UBND Xã Ân Tường - T..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 387,
+    "so_hieu": "12722/UBND-XDCT",
+    "range": "15003-15181",
+    "r1": 15003,
+    "r2": 15181,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 23,
+    "act_y": 23,
+    "h_thieu": 2,
+    "act_r": 1,
+    "act_ex": 1,
+    "exc_item": [
+      15181,
+      "UBND phường Hoài Nhơn Nam..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 403,
+    "so_hieu": "12706/UBND-NNMT",
+    "range": "15541-15693",
+    "r1": 15541,
+    "r2": 15693,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 8,
+    "act_y": 8,
+    "h_thieu": 1,
+    "act_r": 0,
+    "act_ex": 1,
+    "exc_item": [
+      15693,
+      "Xã Ia Tôr -..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 412,
+    "so_hieu": "12697/UBND-XDCT",
+    "range": "15811-15958",
+    "r1": 15811,
+    "r2": 15958,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 1,
+    "act_y": 1,
+    "h_thieu": 1,
+    "act_r": 0,
+    "act_ex": 1,
+    "exc_item": [
+      15958,
+      "..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 456,
+    "so_hieu": "12654/UBND-XDCT",
+    "range": "16613-16762",
+    "r1": 16613,
+    "r2": 16762,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 5,
+    "act_y": 5,
+    "h_thieu": 1,
+    "act_r": 0,
+    "act_ex": 1,
+    "exc_item": [
+      16762,
+      "U..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 476,
+    "so_hieu": "12634/UBND-KGVX",
+    "range": "17100-17247",
+    "r1": 17100,
+    "r2": 17247,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 2,
+    "act_y": 2,
+    "h_thieu": 1,
+    "act_r": 0,
+    "act_ex": 1,
+    "exc_item": [
+      17247,
+      "UBND x..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 488,
+    "so_hieu": "12622/UBND-NNMT",
+    "range": "17647-17797",
+    "r1": 17647,
+    "r2": 17797,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 2,
+    "act_y": 2,
+    "h_thieu": 1,
+    "act_r": 0,
+    "act_ex": 1,
+    "exc_item": [
+      17797,
+      "UBND ..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  },
+  {
+    "stt": 499,
+    "so_hieu": "12611/UBND-NC",
+    "range": "18147-18312",
+    "r1": 18147,
+    "r2": 18312,
+    "group": "Nhóm 1 (Gom ô Ngoại lệ vào Thiếu)",
+    "h_du": 23,
+    "act_y": 23,
+    "h_thieu": 5,
+    "act_r": 4,
+    "act_ex": 1,
+    "exc_item": [
+      18312,
+      "Xã Ia K..."
+    ],
+    "dup_items": {},
+    "num_dup_rows": 0
+  }
+]

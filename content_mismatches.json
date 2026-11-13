@@ -1,0 +1,920 @@
+[
+  {
+    "stt": "16.0",
+    "so_hieu": "13096/UBND-KTTH",
+    "range": "342-517",
+    "h_du_count": 26,
+    "act_yellow_count": 27,
+    "act_yellow_unique": 27,
+    "h_thieu_count": 2,
+    "act_red_count": 2,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [
+      "UBND phường Quy Nhơn Nam - Tỉnh Gia Lai (H21.181)"
+    ],
+    "thieu_in_h_not_in_red": [],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "17.0",
+    "so_hieu": "13095/UBND-NC",
+    "range": "518-765",
+    "h_du_count": 60,
+    "act_yellow_count": 60,
+    "act_yellow_unique": 60,
+    "h_thieu_count": 3,
+    "act_red_count": 2,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "Bộ Chỉ huy Quân sự tỉnh G..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "23.0",
+    "so_hieu": "13089/UBND-NNMT",
+    "range": "920-1084",
+    "h_du_count": 21,
+    "act_yellow_count": 21,
+    "act_yellow_unique": 21,
+    "h_thieu_count": 3,
+    "act_red_count": 2,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "UBND phường Ho..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "25.0",
+    "so_hieu": "13087/UBND-NNMT",
+    "range": "1095-1243",
+    "h_du_count": 3,
+    "act_yellow_count": 4,
+    "act_yellow_unique": 4,
+    "h_thieu_count": 1,
+    "act_red_count": 1,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [
+      "UBND xã Bình An - Tỉnh Gia Lai (H21.221)"
+    ],
+    "thieu_in_h_not_in_red": [],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "46.0",
+    "so_hieu": "13066/UBND-XDCT",
+    "range": "1609-1779",
+    "h_du_count": 21,
+    "act_yellow_count": 23,
+    "act_yellow_unique": 22,
+    "h_thieu_count": 0,
+    "act_red_count": 0,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [
+      "Ban QLDA các công trình Giao thông và Dân dụng tỉnh Gia Lai (H21.40)"
+    ],
+    "thieu_in_h_not_in_red": [],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "67.0",
+    "so_hieu": "13045/UBND-XDCT",
+    "range": "2238-2386",
+    "h_du_count": 1,
+    "act_yellow_count": 1,
+    "act_yellow_unique": 1,
+    "h_thieu_count": 2,
+    "act_red_count": 1,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "78.0",
+    "so_hieu": "13034/UBND-KGVX",
+    "range": "2623-2792",
+    "h_du_count": 13,
+    "act_yellow_count": 14,
+    "act_yellow_unique": 14,
+    "h_thieu_count": 0,
+    "act_red_count": 0,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [
+      "Xã Chư Sê - tỉnh Gia Lai (H21.119)"
+    ],
+    "thieu_in_h_not_in_red": [],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "81.0",
+    "so_hieu": "13031/UBND-NNMT",
+    "range": "2820-2967",
+    "h_du_count": 1,
+    "act_yellow_count": 2,
+    "act_yellow_unique": 2,
+    "h_thieu_count": 1,
+    "act_red_count": 1,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [
+      "UBND phường Hoài Nhơn Đông - Tỉnh Gia Lai (H21.194)"
+    ],
+    "thieu_in_h_not_in_red": [],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "86.0",
+    "so_hieu": "13026/UBND-NC",
+    "range": "3036-3294",
+    "h_du_count": 61,
+    "act_yellow_count": 63,
+    "act_yellow_unique": 62,
+    "h_thieu_count": 0,
+    "act_red_count": 0,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [
+      "Ban Quản lý Khu kinh tế - tỉnh Gia Lai (H21.02)"
+    ],
+    "thieu_in_h_not_in_red": [],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "92.0",
+    "so_hieu": "13020/UBND-NC",
+    "range": "3405-3582",
+    "h_du_count": 26,
+    "act_yellow_count": 26,
+    "act_yellow_unique": 26,
+    "h_thieu_count": 6,
+    "act_red_count": 5,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "U..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "96.0",
+    "so_hieu": "13016/UBND-KGVX",
+    "range": "3629-3802",
+    "h_du_count": 24,
+    "act_yellow_count": 24,
+    "act_yellow_unique": 24,
+    "h_thieu_count": 5,
+    "act_red_count": 4,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "U..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "98.0",
+    "so_hieu": "13014/UBND-NNMT",
+    "range": "3814-4018",
+    "h_du_count": 31,
+    "act_yellow_count": 34,
+    "act_yellow_unique": 32,
+    "h_thieu_count": 8,
+    "act_red_count": 8,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [
+      "Xã Ia Pnôn - tỉnh Gia Lai (H21.152)"
+    ],
+    "thieu_in_h_not_in_red": [],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "99.0",
+    "so_hieu": "13013/UBND-NC",
+    "range": "4019-4032",
+    "h_du_count": 1,
+    "act_yellow_count": 0,
+    "act_yellow_unique": 0,
+    "h_thieu_count": 0,
+    "act_red_count": 0,
+    "act_exception_count": 0,
+    "du_in_h_not_in_yellow": [
+      "Cơ quan Ủy ban MTTQ Việt Nam tỉnh Gia Lai (A21.13)"
+    ],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "107.0",
+    "so_hieu": "13005/UBND-NC",
+    "range": "4378-4557",
+    "h_du_count": 22,
+    "act_yellow_count": 22,
+    "act_yellow_unique": 22,
+    "h_thieu_count": 6,
+    "act_red_count": 5,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "UBND phường..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "108.0",
+    "so_hieu": "13004/UBND-NC",
+    "range": "4558-4730",
+    "h_du_count": 22,
+    "act_yellow_count": 22,
+    "act_yellow_unique": 22,
+    "h_thieu_count": 4,
+    "act_red_count": 3,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "Phường Hội..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "110.0",
+    "so_hieu": "13001/UBND-XDCT",
+    "range": "4746-4893",
+    "h_du_count": 3,
+    "act_yellow_count": 3,
+    "act_yellow_unique": 3,
+    "h_thieu_count": 2,
+    "act_red_count": 1,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "Xã Chư Pưh - t..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "123.0",
+    "so_hieu": "12988/UBND-NC",
+    "range": "5062-5232",
+    "h_du_count": 23,
+    "act_yellow_count": 23,
+    "act_yellow_unique": 23,
+    "h_thieu_count": 4,
+    "act_red_count": 3,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "Xã Kông Chro - tỉnh Gia L..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "137.0",
+    "so_hieu": "12974/UBND-XDCT",
+    "range": "5499-5646",
+    "h_du_count": 3,
+    "act_yellow_count": 3,
+    "act_yellow_unique": 3,
+    "h_thieu_count": 2,
+    "act_red_count": 1,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "UBND xã ..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "142.0",
+    "so_hieu": "12969/UBND-NC",
+    "range": "5701-5866",
+    "h_du_count": 23,
+    "act_yellow_count": 23,
+    "act_yellow_unique": 23,
+    "h_thieu_count": 3,
+    "act_red_count": 2,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "Xã Ia Krái - tỉnh Gia Lai..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "143.0",
+    "so_hieu": "12967/UBND-PVHCC",
+    "range": "5867-6042",
+    "h_du_count": 2,
+    "act_yellow_count": 2,
+    "act_yellow_unique": 2,
+    "h_thieu_count": 30,
+    "act_red_count": 29,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "UBND Xã Vĩnh Thạnh - Tỉnh Gia..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "152.0",
+    "so_hieu": "12958/UBND-NC",
+    "range": "6154-6326",
+    "h_du_count": 20,
+    "act_yellow_count": 20,
+    "act_yellow_unique": 20,
+    "h_thieu_count": 1,
+    "act_red_count": 0,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "Xã..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "172.0",
+    "so_hieu": "12938/UBND-KGVX",
+    "range": "6628-6785",
+    "h_du_count": 5,
+    "act_yellow_count": 5,
+    "act_yellow_unique": 5,
+    "h_thieu_count": 2,
+    "act_red_count": 1,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "Cơ quan ..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "180.0",
+    "so_hieu": "12930/UBND-NC",
+    "range": "6905-7084",
+    "h_du_count": 32,
+    "act_yellow_count": 32,
+    "act_yellow_unique": 32,
+    "h_thieu_count": 6,
+    "act_red_count": 5,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "UBND Xã ..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "181.0",
+    "so_hieu": "12929/UBND-NNMT",
+    "range": "7085-7245",
+    "h_du_count": 4,
+    "act_yellow_count": 4,
+    "act_yellow_unique": 4,
+    "h_thieu_count": 8,
+    "act_red_count": 7,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "UBND xã T..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "183.0",
+    "so_hieu": "12927/UBND-NC",
+    "range": "7266-7442",
+    "h_du_count": 23,
+    "act_yellow_count": 23,
+    "act_yellow_unique": 23,
+    "h_thieu_count": 10,
+    "act_red_count": 9,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "Phường..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "187.0",
+    "so_hieu": "12923/UBND-NC",
+    "range": "7590-7759",
+    "h_du_count": 23,
+    "act_yellow_count": 23,
+    "act_yellow_unique": 23,
+    "h_thieu_count": 1,
+    "act_red_count": 0,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "Ph..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "191.0",
+    "so_hieu": "12919/UBND-NC",
+    "range": "7836-7998",
+    "h_du_count": 6,
+    "act_yellow_count": 6,
+    "act_yellow_unique": 6,
+    "h_thieu_count": 2,
+    "act_red_count": 1,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "UBND ..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "193.0",
+    "so_hieu": "12917/UBND-NC",
+    "range": "8017-8265",
+    "h_du_count": 51,
+    "act_yellow_count": 51,
+    "act_yellow_unique": 51,
+    "h_thieu_count": 1,
+    "act_red_count": 0,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "UBND..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "222.0",
+    "so_hieu": "12888/UBND-NNMT",
+    "range": "8902-9051",
+    "h_du_count": 6,
+    "act_yellow_count": 6,
+    "act_yellow_unique": 6,
+    "h_thieu_count": 1,
+    "act_red_count": 0,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "Xã ..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "237.0",
+    "so_hieu": "12873/UBND-XDCT",
+    "range": "9334-9483",
+    "h_du_count": 3,
+    "act_yellow_count": 3,
+    "act_yellow_unique": 3,
+    "h_thieu_count": 2,
+    "act_red_count": 1,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "UBND phường Hoài N..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "249.0",
+    "so_hieu": "12861/UBND-KGVX",
+    "range": "9673-9838",
+    "h_du_count": 24,
+    "act_yellow_count": 24,
+    "act_yellow_unique": 24,
+    "h_thieu_count": 3,
+    "act_red_count": 2,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "Xã Canh Vinh - T..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "250.0",
+    "so_hieu": "12860/UBND-KGVX",
+    "range": "9839-10008",
+    "h_du_count": 24,
+    "act_yellow_count": 24,
+    "act_yellow_unique": 24,
+    "h_thieu_count": 2,
+    "act_red_count": 1,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "Ph..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "260.0",
+    "so_hieu": "12850/UBND-XDCT",
+    "range": "10153-10318",
+    "h_du_count": 23,
+    "act_yellow_count": 23,
+    "act_yellow_unique": 23,
+    "h_thieu_count": 4,
+    "act_red_count": 3,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "UBND ..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "282.0",
+    "so_hieu": "12828/UBND-KGVX",
+    "range": "10882-11064",
+    "h_du_count": 25,
+    "act_yellow_count": 25,
+    "act_yellow_unique": 25,
+    "h_thieu_count": 8,
+    "act_red_count": 7,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "UBND..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "305.0",
+    "so_hieu": "12805/UBND-NC",
+    "range": "11346-11491",
+    "h_du_count": 1,
+    "act_yellow_count": 1,
+    "act_yellow_unique": 1,
+    "h_thieu_count": 1,
+    "act_red_count": 0,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "UBND xã Ngô Mây - Tỉnh G..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "308.0",
+    "so_hieu": "12802/UBND-KTTH",
+    "range": "11515-11683",
+    "h_du_count": 22,
+    "act_yellow_count": 23,
+    "act_yellow_unique": 22,
+    "h_thieu_count": 4,
+    "act_red_count": 3,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "UBND ..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "330.0",
+    "so_hieu": "12780/UBND-KTTH",
+    "range": "12027-12201",
+    "h_du_count": 26,
+    "act_yellow_count": 26,
+    "act_yellow_unique": 26,
+    "h_thieu_count": 2,
+    "act_red_count": 1,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "Xã Bờ Ngoong - tỉnh Gia Lai..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "331.0",
+    "so_hieu": "12779/UBND-NC",
+    "range": "12202-12360",
+    "h_du_count": 17,
+    "act_yellow_count": 17,
+    "act_yellow_unique": 17,
+    "h_thieu_count": 1,
+    "act_red_count": 0,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "Sở Khoa học ..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "341.0",
+    "so_hieu": "12769/UBND-KTTH",
+    "range": "12645-12813",
+    "h_du_count": 20,
+    "act_yellow_count": 20,
+    "act_yellow_unique": 20,
+    "h_thieu_count": 3,
+    "act_red_count": 2,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "UBND ..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "344.0",
+    "so_hieu": "12765/UBND-NNMT",
+    "range": "12973-13126",
+    "h_du_count": 1,
+    "act_yellow_count": 1,
+    "act_yellow_unique": 1,
+    "h_thieu_count": 1,
+    "act_red_count": 0,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "UBND Xã Ân Tư..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "349.0",
+    "so_hieu": "12760/UBND-KGVX",
+    "range": "13163-13317",
+    "h_du_count": 6,
+    "act_yellow_count": 6,
+    "act_yellow_unique": 6,
+    "h_thieu_count": 1,
+    "act_red_count": 0,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "Xã Ia Nan - tỉnh Gia La..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "350.0",
+    "so_hieu": "12759/UBND-KGVX",
+    "range": "13318-13481",
+    "h_du_count": 10,
+    "act_yellow_count": 10,
+    "act_yellow_unique": 10,
+    "h_thieu_count": 7,
+    "act_red_count": 6,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "Trung tâm Ph..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "352.0",
+    "so_hieu": "12757/UBND-PVHCC",
+    "range": "13499-13688",
+    "h_du_count": 15,
+    "act_yellow_count": 15,
+    "act_yellow_unique": 15,
+    "h_thieu_count": 30,
+    "act_red_count": 29,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "UBND xã Phù Mỹ - Tỉn..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "366.0",
+    "so_hieu": "12743/UBND-KGVX",
+    "range": "13845-14001",
+    "h_du_count": 3,
+    "act_yellow_count": 3,
+    "act_yellow_unique": 3,
+    "h_thieu_count": 1,
+    "act_red_count": 0,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "UBND xã Vĩnh Sơn - Tinh Gia Lai..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "367.0",
+    "so_hieu": "12742/UBND-KTTH",
+    "range": "14002-14254",
+    "h_du_count": 57,
+    "act_yellow_count": 57,
+    "act_yellow_unique": 57,
+    "h_thieu_count": 2,
+    "act_red_count": 1,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "Xã Ia Mơ - tỉ..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "372.0",
+    "so_hieu": "12737/UBND-NC",
+    "range": "14301-14467",
+    "h_du_count": 25,
+    "act_yellow_count": 25,
+    "act_yellow_unique": 25,
+    "h_thieu_count": 7,
+    "act_red_count": 6,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "Xã Ia Khươl - tỉnh Gia L..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "373.0",
+    "so_hieu": "12736/UBND-KGVX",
+    "range": "14468-14613",
+    "h_du_count": 2,
+    "act_yellow_count": 2,
+    "act_yellow_unique": 2,
+    "h_thieu_count": 1,
+    "act_red_count": 0,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "UBND Xã Ân Tường - T..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "387.0",
+    "so_hieu": "12722/UBND-XDCT",
+    "range": "15003-15181",
+    "h_du_count": 23,
+    "act_yellow_count": 23,
+    "act_yellow_unique": 23,
+    "h_thieu_count": 2,
+    "act_red_count": 1,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "UBND phường Hoài Nhơn Nam..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "403.0",
+    "so_hieu": "12706/UBND-NNMT",
+    "range": "15541-15693",
+    "h_du_count": 8,
+    "act_yellow_count": 8,
+    "act_yellow_unique": 8,
+    "h_thieu_count": 1,
+    "act_red_count": 0,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "Xã Ia Tôr -..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "412.0",
+    "so_hieu": "12697/UBND-XDCT",
+    "range": "15811-15958",
+    "h_du_count": 1,
+    "act_yellow_count": 1,
+    "act_yellow_unique": 1,
+    "h_thieu_count": 1,
+    "act_red_count": 0,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "456.0",
+    "so_hieu": "12654/UBND-XDCT",
+    "range": "16613-16762",
+    "h_du_count": 5,
+    "act_yellow_count": 5,
+    "act_yellow_unique": 5,
+    "h_thieu_count": 1,
+    "act_red_count": 0,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "U..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "476.0",
+    "so_hieu": "12634/UBND-KGVX",
+    "range": "17100-17247",
+    "h_du_count": 2,
+    "act_yellow_count": 2,
+    "act_yellow_unique": 2,
+    "h_thieu_count": 1,
+    "act_red_count": 0,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "UBND x..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "488.0",
+    "so_hieu": "12622/UBND-NNMT",
+    "range": "17647-17797",
+    "h_du_count": 2,
+    "act_yellow_count": 2,
+    "act_yellow_unique": 2,
+    "h_thieu_count": 1,
+    "act_red_count": 0,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "UBND ..."
+    ],
+    "thieu_in_red_not_in_h": []
+  },
+  {
+    "stt": "499.0",
+    "so_hieu": "12611/UBND-NC",
+    "range": "18147-18312",
+    "h_du_count": 23,
+    "act_yellow_count": 23,
+    "act_yellow_unique": 23,
+    "h_thieu_count": 5,
+    "act_red_count": 4,
+    "act_exception_count": 1,
+    "du_in_h_not_in_yellow": [],
+    "du_in_yellow_not_in_h": [],
+    "thieu_in_h_not_in_red": [
+      "Xã Ia K..."
+    ],
+    "thieu_in_red_not_in_h": []
+  }
+]
