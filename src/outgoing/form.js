@@ -224,15 +224,31 @@ export async function prepareOutgoingForm({ doc, recipients, assignments, select
         plan.unshift(...plan.splice(first, 1));
     }
     const groupByCode = new Map();
+    const internalGroupByKey = new Map();
     const inside = new Set(plan.filter(item => item.field.key === 'inside_unit').map(item => item.target.chipId));
     for (const group of selectionPlan) {
-        if (!group?.group_id || group.sphere !== 'int_province_comm' || group.registry_version !== registryVersion
+        const validSphere = group?.sphere === 'int_province_comm' || group?.sphere === 'internal';
+        if (!group?.group_id || !validSphere || group.registry_version !== registryVersion
             || !Array.isArray(group.member_codes) || !group.member_codes.length
             || new Set(group.member_codes).size !== group.member_codes.length) {
             throw new Error('Kế hoạch chọn nhóm không hợp lệ hoặc đã cũ.');
         }
-        if (!group.member_codes.every(code => inside.has(code) && !groupByCode.has(code))) continue;
-        for (const code of group.member_codes) groupByCode.set(code, group);
+        if (group.sphere === 'int_province_comm') {
+            if (!group.member_codes.every(code => inside.has(code) && !groupByCode.has(code))) continue;
+            for (const code of group.member_codes) groupByCode.set(code, group);
+            continue;
+        }
+        const deptId = text(group.group_id);
+        const deptNative = internalDirectory.get(deptId);
+        if (!/^[1-9]\d*$/.test(deptId) || !deptNative || text(deptNative.id) !== deptId || deptNative.type !== 'dept') continue;
+        const deptTarget = { id: deptId, chipId: deptId, native: deptNative, search: deptNative.refFullname || deptNative.name || deptId };
+        for (const definition of FIELD_DEFINITIONS) {
+            if (definition.sphere !== 'internal') continue;
+            const fieldCodes = new Set(plan.filter(item => item.field.key === definition.key).map(item => item.target.chipId));
+            if (!group.member_codes.every(code => fieldCodes.has(code) && !internalGroupByKey.has(`${definition.key}:${code}`))) continue;
+            const entry = { key: `${definition.key}:${deptId}`, fieldKey: definition.key, target: deptTarget, memberCodes: new Set(group.member_codes) };
+            for (const code of group.member_codes) internalGroupByKey.set(`${definition.key}:${code}`, entry);
+        }
     }
     const docId = text(doc?.id);
     if (!docId) throw new Error('Thiếu định danh văn bản.');
@@ -257,7 +273,21 @@ export async function prepareOutgoingForm({ doc, recipients, assignments, select
         const field = document.querySelector(definition.selector);
         return [definition.key, field ? chipIds(field) : []];
     }));
-    const planned = new Set(plan.map(item => `${item.field.key}:${item.target.chipId}`));
+    const activeInternalGroup = key => {
+        const entry = internalGroupByKey.get(key);
+        if (!entry) return null;
+        const fieldExisting = existing[entry.fieldKey] || [];
+        if (!replaceExisting && !fieldExisting.includes(entry.target.chipId)
+            && [...entry.memberCodes].some(code => fieldExisting.includes(code))) {
+            return null;
+        }
+        return entry;
+    };
+    const planned = new Set();
+    for (const item of plan) {
+        const collapsed = activeInternalGroup(`${item.field.key}:${item.target.chipId}`);
+        planned.add(`${item.field.key}:${collapsed ? collapsed.target.chipId : item.target.chipId}`);
+    }
     if (previousPolicyChips.some(chip => existing[chip.field]?.includes(chip.id)
         && !planned.has(`${chip.field}:${chip.id}`))) {
         throw new Error('Form còn người nhận tự thêm theo phạm vi phát hành trước. Hãy bỏ qua form cũ hoặc loại các chip đó trước khi điền.');
@@ -288,13 +318,23 @@ export async function prepareOutgoingForm({ doc, recipients, assignments, select
             }
             onStatus(`Đang điền ${definition.label}: ${recipient.display_name || recipient.name}`);
             const group = definition.key === 'inside_unit' && target.chipId !== firstInsideCode && groupByCode.get(target.chipId);
-            if (!group) await selectIdentity(field, definition, target, guard);
-            else if (!appliedGroups.has(group.group_id)) {
-                await selectGroup(field, group, guard);
-                appliedGroups.add(group.group_id);
+            const internalGroup = !group && activeInternalGroup(`${definition.key}:${target.chipId}`);
+            const effectiveTarget = internalGroup ? internalGroup.target : target;
+            if (group) {
+                if (!appliedGroups.has(group.group_id)) {
+                    await selectGroup(field, group, guard);
+                    appliedGroups.add(group.group_id);
+                }
+            } else if (internalGroup) {
+                if (!appliedGroups.has(internalGroup.key)) {
+                    await selectIdentity(field, definition, effectiveTarget, guard);
+                    appliedGroups.add(internalGroup.key);
+                }
+            } else {
+                await selectIdentity(field, definition, target, guard);
             }
-            expectedByField.get(definition.key).add(target.chipId);
-            applied.push({ recipient_id: recipient.recipient_id, field: definition.key, id: target.id });
+            expectedByField.get(definition.key).add(effectiveTarget.chipId);
+            applied.push({ recipient_id: recipient.recipient_id, field: definition.key, id: effectiveTarget.id });
             guard();
         }
         guard();
@@ -312,10 +352,11 @@ export async function prepareOutgoingForm({ doc, recipients, assignments, select
         const publicationRecipients = new Set(publicationAssignments.map(a => a.recipient_id));
         const publicationChips = previousPolicyChips.filter(chip => expectedByField.get(chip.field)?.has(chip.id));
         for (const { recipient, field, target } of plan) {
+            const chipId = (activeInternalGroup(`${field.key}:${target.chipId}`)?.target ?? target).chipId;
             if (publicationRecipients.has(recipient.recipient_id)
-                && !existing[field.key].includes(target.chipId)
-                && !publicationChips.some(chip => chip.field === field.key && chip.id === target.chipId)) {
-                publicationChips.push({ field: field.key, id: target.chipId });
+                && !existing[field.key].includes(chipId)
+                && !publicationChips.some(chip => chip.field === field.key && chip.id === chipId)) {
+                publicationChips.push({ field: field.key, id: chipId });
             }
         }
         return { applied, existing, publicationChips };

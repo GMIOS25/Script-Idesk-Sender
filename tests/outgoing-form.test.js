@@ -342,3 +342,143 @@ test('accepts repeated representations of the same organization code in a single
     assert.deepEqual(state.fields.inside_unit.chips.map(chip => chip.getAttribute('data-uuid')), ['H21.17']);
     assert.equal(state.submitted, 0);
 });
+
+test('collapses multiple int_province_comm native groups plus individual units while keeping firstInsideCode', async () => {
+    const pvhcc = { ...unit, recipient_id: 'comm_pvhcc', source_id: 'comm_pvhcc', code: 'H21.21.04', name: 'Trung tâm PVHCC' };
+    const so1 = { ...unit, recipient_id: 'comm_so1', source_id: 'comm_so1', code: 'H21.05', name: 'Sở Công Thương' };
+    const so2 = { ...unit, recipient_id: 'comm_so2', source_id: 'comm_so2', code: 'H21.06', name: 'Sở Giáo dục' };
+    const ban1 = { ...unit, recipient_id: 'comm_ban1', source_id: 'comm_ban1', code: 'H21.38', name: 'Ban QLDA ĐTXD' };
+    const ban2 = { ...unit, recipient_id: 'comm_ban2', source_id: 'comm_ban2', code: 'H21.40', name: 'Ban QLDA GTDD' };
+    const congAn = { ...unit, recipient_id: 'comm_ca', source_id: 'comm_ca', code: 'G01.035.000.000', name: 'Công an tỉnh' };
+    for (const item of [pvhcc, so1, so2, ban1, ban2, congAn]) {
+        globalThis.__formBridge.organizationDirectory.set(`int_province_comm:${item.code}`, item);
+    }
+    const field = state.fields.inside_unit;
+    field.addOption(pvhcc.code);
+    field.addOption(congAn.code);
+    field.popup.one.set('a.user-box-tab[data-type="group"]', new Element());
+    let gSoClicks = 0;
+    let gBanClicks = 0;
+    const gSo = new Element({ 'data-id': 'g_so' }, () => {
+        gSoClicks++;
+        addChip(field, so1.code);
+        addChip(field, so2.code);
+    });
+    const gBan = new Element({ 'data-id': 'g_ban' }, () => {
+        gBanClicks++;
+        addChip(field, ban1.code);
+        addChip(field, ban2.code);
+    });
+    gSo.classList = { contains: () => false };
+    gBan.classList = { contains: () => false };
+    field.popup.many.set('[data-role="group"] a.user-box-group-item[data-id]', () => [gSo, gBan]);
+    globalThis.window = {
+        jQuery: node => ({
+            data: () => (node === gSo ? { type: 'group', units: [so1, so2] } : { type: 'group', units: [ban1, ban2] }),
+        }),
+    };
+    try {
+        const result = await api.prepareOutgoingForm({
+            doc,
+            recipients: [so1, so2, ban1, ban2, congAn, pvhcc],
+            assignments: {
+                comm_so1: ['inside_unit'], comm_so2: ['inside_unit'],
+                comm_ban1: ['inside_unit'], comm_ban2: ['inside_unit'],
+                comm_ca: ['inside_unit'], comm_pvhcc: ['inside_unit'],
+            },
+            firstInsideCode: pvhcc.code,
+            registryVersion: 'r1',
+            selectionPlan: [
+                { group_id: 'g_so', sphere: 'int_province_comm', registry_version: 'r1', member_codes: [so1.code, so2.code] },
+                { group_id: 'g_ban', sphere: 'int_province_comm', registry_version: 'r1', member_codes: [ban1.code, ban2.code] },
+            ],
+        });
+        assert.equal(gSoClicks, 1);
+        assert.equal(gBanClicks, 1);
+        assert.equal(result.applied.length, 6);
+        assert.equal(field.chips[0].getAttribute('data-uuid'), 'H21.21.04');
+        assert.deepEqual(field.chips.map(c => c.getAttribute('data-uuid')), ['H21.21.04', 'H21.05', 'H21.06', 'H21.38', 'H21.40', 'G01.035.000.000']);
+        assert.equal(state.submitted, 0);
+    } finally { delete globalThis.window; }
+});
+
+test('collapses a fully-covered internal department group into one parent dept selection plus uncovered individuals', async () => {
+    const member2 = {
+        recipient_id: 'internal_278', source_id: '278', recipient_type: 'INTERNAL_PERSON',
+        sphere: 'internal', code: 'thanhnt@vpub.gialai.gov.vn', name: 'Nguyễn Tuấn Thanh',
+    };
+    const outsideMember = {
+        recipient_id: 'internal_491', source_id: '491', recipient_type: 'INTERNAL_PERSON',
+        sphere: 'internal', code: 'danhnh@vpub.gialai.gov.vn', name: 'Nguyễn Hoàng Đan',
+    };
+    globalThis.__formBridge.internalDirectory.set('278', { id: 278, type: 'alias', refUname: member2.code, refFullname: member2.name });
+    globalThis.__formBridge.internalDirectory.set('491', { id: 491, type: 'alias', refUname: outsideMember.code, refFullname: outsideMember.name });
+    let parentClicks = 0;
+    let member1Clicks = 0;
+    let outsideClicks = 0;
+    state.fields.responsible.options = [];
+    state.fields.responsible.addOption('269', '269', () => { parentClicks++; });
+    state.fields.responsible.addOption('270', '270', () => { member1Clicks++; });
+    state.fields.responsible.addOption('491', '491', () => { outsideClicks++; });
+    const result = await api.prepareOutgoingForm({
+        doc,
+        recipients: [person, member2, outsideMember],
+        assignments: {
+            internal_270: ['responsible'],
+            internal_278: ['responsible'],
+            internal_491: ['responsible'],
+        },
+        registryVersion: 'r1',
+        selectionPlan: [
+            { group_id: '269', sphere: 'internal', registry_version: 'r1', member_codes: ['270', '278'] },
+        ],
+    });
+    assert.equal(parentClicks, 1);
+    assert.equal(member1Clicks, 0);
+    assert.equal(outsideClicks, 1);
+    assert.deepEqual(state.fields.responsible.chips.map(c => c.getAttribute('data-uuid')), ['269', '491']);
+    assert.deepEqual(result.applied, [
+        { recipient_id: 'internal_270', field: 'responsible', id: '269' },
+        { recipient_id: 'internal_278', field: 'responsible', id: '269' },
+        { recipient_id: 'internal_491', field: 'responsible', id: '491' },
+    ]);
+    assert.equal(state.submitted, 0);
+});
+
+test('falls back to individual internal selections when a group member is omitted or split across fields', async () => {
+    const member2 = {
+        recipient_id: 'internal_278', source_id: '278', recipient_type: 'INTERNAL_PERSON',
+        sphere: 'internal', code: 'thanhnt@vpub.gialai.gov.vn', name: 'Nguyễn Tuấn Thanh',
+    };
+    globalThis.__formBridge.internalDirectory.set('278', { id: 278, type: 'alias', refUname: member2.code, refFullname: member2.name });
+    let parentClicks = 0;
+    state.fields.responsible.addOption('269', '269', () => { parentClicks++; });
+    state.fields.save.addOption('269', '269', () => { parentClicks++; });
+    state.fields.save.addOption('278');
+
+    // Case 1: member omitted from assignments
+    await api.prepareOutgoingForm({
+        doc,
+        recipients: [person, member2],
+        assignments: { internal_270: ['responsible'] },
+        registryVersion: 'r1',
+        selectionPlan: [{ group_id: '269', sphere: 'internal', registry_version: 'r1', member_codes: ['270', '278'] }],
+    });
+    assert.equal(parentClicks, 0);
+    assert.deepEqual(state.fields.responsible.chips.map(c => c.getAttribute('data-uuid')), ['270']);
+
+    // Reset chips for Case 2: members assigned to different internal fields
+    state.fields.responsible.chips = [];
+    state.fields.save.chips = [];
+    await api.prepareOutgoingForm({
+        doc,
+        recipients: [person, member2],
+        assignments: { internal_270: ['responsible'], internal_278: ['save'] },
+        registryVersion: 'r1',
+        selectionPlan: [{ group_id: '269', sphere: 'internal', registry_version: 'r1', member_codes: ['270', '278'] }],
+    });
+    assert.equal(parentClicks, 0);
+    assert.deepEqual(state.fields.responsible.chips.map(c => c.getAttribute('data-uuid')), ['270']);
+    assert.deepEqual(state.fields.save.chips.map(c => c.getAttribute('data-uuid')), ['278']);
+    assert.equal(state.submitted, 0);
+});

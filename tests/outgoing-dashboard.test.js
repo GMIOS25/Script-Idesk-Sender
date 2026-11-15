@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { refreshSessionDocument } from '../src/outgoing/dashboard.js';
+import { refreshSessionDocument, verifyGroupDependencies } from '../src/outgoing/dashboard.js';
 import { documentMetadata } from '../src/outgoing/provider.js';
 
 test('discards reviewed recipients and feedback when the native main attachment changes', () => {
@@ -26,4 +26,19 @@ test('preserves a reviewed session when the refreshed main file and document met
     refreshSessionDocument(session, doc);
     assert.equal(session.review, review);
     assert.equal(session.reviewed, true);
+});
+
+test('validates int_province_comm group dependencies against native groups and allows internal parent-dept groups', () => {
+    const groupDependencies = [
+        { group_id: 'g1', sphere: 'int_province_comm', registry_version: 'r1', member_codes: ['H21.05', 'H21.06'] },
+        { group_id: '269', sphere: 'internal', registry_version: 'r1', member_codes: ['270', '278'] },
+    ];
+    const nativeGroups = [
+        { id: 'g1', sphere: 'int_province_comm', complete: true, member_codes: ['H21.05', 'H21.06'] },
+    ];
+    assert.doesNotThrow(() => verifyGroupDependencies(groupDependencies, nativeGroups));
+    assert.throws(
+        () => verifyGroupDependencies(groupDependencies, [{ id: 'g1', sphere: 'int_province_comm', complete: true, member_codes: ['H21.05', 'H21.99'] }]),
+        /Thành viên nhóm iDesk đã thay đổi/,
+    );
 });

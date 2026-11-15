@@ -8,6 +8,18 @@ import { makePanelDraggable } from './drag.js';
 
 const invalidate = session => { session.reviewed = false; session.feedbackId = ''; session.applied = null; session.error = ''; };
 
+export function verifyGroupDependencies(groupDependencies = [], nativeGroups = []) {
+    for (const group of groupDependencies) {
+        if (group.sphere !== 'int_province_comm') continue;
+        const matches = nativeGroups.filter(native => native.id === group.group_id && native.sphere === group.sphere);
+        const live = matches.length === 1 ? matches[0] : null;
+        if (!live?.complete || live.member_codes.length !== group.member_codes.length
+            || live.member_codes.some(code => !group.member_codes.includes(code))) {
+            throw new Error('Thành viên nhóm iDesk đã thay đổi. Đồng bộ danh bạ rồi đối chiếu lại.');
+        }
+    }
+}
+
 export const refreshResolution = async (session, onStatus = () => {}) => {
     invalidate(session);
     const response = await session.client.resolveJob(session.jobId, session.review.result, { onStatus });
@@ -258,15 +270,13 @@ export const createDashboard = () => {
         }
         const selectionPlan = session.review.result.selection_plan || [];
         const groupDependencies = session.review.result.audit?.group_dependencies || selectionPlan;
-        const { nativeGroups } = await primeDirectories([...session.review.recipients.values()], { groups: groupDependencies.length > 0 });
-        for (const group of groupDependencies) {
-            const matches = nativeGroups.filter(native => native.id === group.group_id && native.sphere === group.sphere);
-            const live = matches.length === 1 ? matches[0] : null;
-            if (!live?.complete || live.member_codes.length !== group.member_codes.length
-                || live.member_codes.some(code => !group.member_codes.includes(code))) {
-                invalidate(session);
-                throw new Error('Thành viên nhóm iDesk đã thay đổi. Đồng bộ danh bạ rồi đối chiếu lại.');
-            }
+        const needNativeGroups = groupDependencies.some(group => group.sphere === 'int_province_comm');
+        const { nativeGroups } = await primeDirectories([...session.review.recipients.values()], { groups: needNativeGroups });
+        try {
+            verifyGroupDependencies(groupDependencies, nativeGroups);
+        } catch (error) {
+            invalidate(session);
+            throw error;
         }
         await session.client.checkVersions(session.review.result);
         const result = await prepareOutgoingForm({ doc, recipients: [...session.review.recipients.values()],
