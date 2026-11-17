@@ -59,8 +59,22 @@ const supplementOrganizations = async (session, queries, { search = searchOrgani
     return { found: found.size, failed: warnings.some(w => w.startsWith('Tra cứu iDesk chưa thành công')) };
 };
 
+const organizationSearchVariants = raw => {
+    const query = String(raw || '').trim();
+    if (!query) return [];
+    const variants = [query];
+    const expandedCty = query.replace(/\bCty\.?\b/gi, 'Công ty').replace(/\s+/g, ' ').trim();
+    if (expandedCty !== query) variants.push(expandedCty);
+    if (/^\s*VNPT\s+Gia\s+Lai\s*$/i.test(query) || /\bVNPT\b/i.test(query)) {
+        if (/Gia\s+Lai/i.test(query)) variants.push('Viễn thông Gia Lai');
+    }
+    return variants;
+};
+
 export const enrichUnresolvedOrganizations = async (session, options = {}) => {
-    const queries = session.review.result.unresolved.filter(item => ['unit', 'organization'].includes(item.kind)).map(item => item.raw);
+    const queries = session.review.result.unresolved
+        .filter(item => ['unit', 'organization'].includes(item.kind))
+        .flatMap(item => organizationSearchVariants(item.raw));
     try { return await supplementOrganizations(session, queries, options); }
     catch (error) { session.directoryWarning = `Chưa cập nhật được danh bạ: ${error.message}`; return { found: 0, failed: true }; }
 };
